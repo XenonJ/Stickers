@@ -6,7 +6,7 @@ class Users(models.Model):
     user_id = models.IntegerField(primary_key=True)
     user_name = models.CharField(max_length=20, blank=False)
     code_hash = models.CharField(max_length=20, blank=False)
-    image_url = models.URLField(max_length=20)
+    image_url = models.URLField()
     Real_name_authentication = models.BooleanField(default=False)
     Student_id = models.IntegerField(default=0)
     user_permissions = models.CharField(max_length=20)
@@ -18,11 +18,12 @@ class Users(models.Model):
 
 class Posts(models.Model):
     post_id = models.IntegerField(primary_key=True)
-    post_time = models.TimeField()
-    page_coordinates = models.CharField(max_length=50, blank=False)
+    post_time = models.TimeField(auto_now_add=True)
+    page_coordinates_x = models.IntegerField()
+    page_coordinates_y = models.IntegerField()
     rotation_angle = models.IntegerField(default=0)
-    picture_url = models.URLField(max_length=50)
-    background_url = models.URLField(max_length=50)
+    picture_url = models.URLField()
+    background_url = models.URLField()
     # like_number = models.IntegerField()
     # comment_number = models.IntegerField()
     if_anonymous = models.BooleanField(default=False)
@@ -40,7 +41,7 @@ class Comments(models.Model):
     if_anonymous = models.BooleanField(default=False)
     post_id = models.ForeignKey('Posts', on_delete=models.CASCADE)
     # like_number = models.IntegerField()
-    # comment_time = models.TimeField()
+    comment_time = models.TimeField()
 
     class Meta:
         db_table = 'comments'
@@ -49,16 +50,16 @@ class Comments(models.Model):
 class LikedPosts(models.Model):
     post_id = models.ForeignKey('Posts', on_delete=models.CASCADE)
     user_id = models.ForeignKey('Users', on_delete=models.CASCADE)
-    like_time = models.TimeField()
+    like_time = models.TimeField(auto_now_add=True)
 
     class Meta:
         unique_together = ("post_id", "user_id")
 
 
-class CommentedPosts(models.Model):
-    post_id = models.ForeignKey('Posts', on_delete=models.CASCADE)
+class LikedComments(models.Model):
+    comment_id = models.ForeignKey('Comments', on_delete=models.CASCADE)
     user_id = models.ForeignKey('Users', on_delete=models.CASCADE)
-    comment_time = models.TimeField()
+    like_time = models.TimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ("post_id", "user_id")
+        unique_together = ("comment_id", "user_id")
