@@ -17,24 +17,24 @@ def md5(pwd):
 
 
 def register(request):
-    data = []
+    res = {}
+    res = json.loads(json.dumps(res))
     if request.method == "POST":
         user_id = request.POST.get('user_id')
-        username = request.POST.get('username')
+        user_name = request.POST.get('user_name')
         password = request.POST.get('password')
         student_number = request.POST.get('student_number')
         profile = request.FILES.get('profile')
 
         if models.Users.objects.filter(user_id=user_id):
-            tmp = {
-                'status': 404,
-                'error': "This ID has been used.",
-            }
-            data.append(tmp)
-            return HttpResponse(json.dumps(data), content_type='application/json')
+            res['status'] = 404
+            res['error'] = "This ID has been used."
+            return HttpResponse(json.dumps(res), content_type='application/json')
         else:
-            # 哈希用户密码
+            # 用户密码加盐
             hashed_pwd = md5(password)
+            # 生成用户token
+            token = md5(user_id + password)
             # 修改头像图片名称
             profile.name = user_id + profile.name
 
@@ -47,48 +47,110 @@ def register(request):
                         fw.write(ck)
                 profile_link = os.path.join('http://127.0.0.1:8000/', 'images/' + profile.name)
 
-                models.Users.objects.create(user_id=user_id, username=username, code_hash=hashed_pwd, image_url=profile_link, Real_name_authentication=student_number is not None, user_permissions='user', show_yourself='')
+                models.Users.objects.create(user_id=user_id, user_name=user_name, code_hash=hashed_pwd, token=token, image_url=profile_link, Real_name_authentication=student_number is not None, user_permissions='user', show_yourself='')
 
-                tmp = {
-                    'status': 200,
-                    'error': None,
-                }
-                data.append(tmp)
-                return HttpResponse(json.dumps(data), content_type='application/json')
-    return HttpResponse(json.dumps(data), content_type='application/json')
+                res['status'] = 200
+                res['error'] = ""
+                return HttpResponse(json.dumps(res), content_type='application/json')
+    return HttpResponse(json.dumps(res), content_type='application/json')
 
 
 def login(request):
-    data = []
+    res = {}
+    res = json.loads(json.dumps(res))
     if request.method == "POST":
         user_id = request.POST.get('user_id')
         password = request.POST.get('password')
 
         try:
-            cursor = connection.cursor()
-            sql = "select code_hash from users where user_id = {}".format(user_id)
-            cursor.execute(sql)
-            stored_pwd = cursor.fetchall()
-            connection.commit()
-            cursor.close()
-            connection.close()
-            if md5(password) == stored_pwd[0][0]:
-                tmp = {
-                    'status': 200,
-                    'error': None,
+            usr = models.Users.objects.filter(user_id=user_id)
+            if md5(password) == usr[0]["code_hash"]:
+                data = {
+                    'token': usr[0]["token"],
+                    'user_permission': usr[0]["user_permissions"]
                 }
+                res['data'] = data
+                res['status'] = 200
+                res['error'] = ""
             else:
-                tmp = {
-                    'status': 404,
-                    'error': 'Wrong Password',
-                }
-            data.append(tmp)
-            return HttpResponse(json.dumps(data), content_type='application/json')
+                res['status'] = 404
+                res['error'] = "Wrong Password."
+            return HttpResponse(json.dumps(res), content_type='application/json')
+
         except Exception as e:
-            tmp = {
-                'status': 404,
-                'error': str(e),
-            }
-            data.append(tmp)
-            return HttpResponse(json.dumps(data), content_type='application/json')
-    return HttpResponse(json.dumps(data), content_type='application/json')
+            res['status'] = 404
+            res['error'] = str(e)
+            return HttpResponse(json.dumps(res), content_type='application/json')
+    return HttpResponse(json.dumps(res), content_type='application/json')
+
+
+def comment(request):
+    res = {}
+    if request.method == "POST":
+        token = request.POST.get('token')
+        post_id = request.POST.get('post_id')
+        content = request.POST.get('content')
+        if_anonymous = request.POST.get('if_anonymous')
+
+        # 获取token值对应的user_id
+        usr = models.Users.objects.filter(token=token)
+        user_id = usr[0]["user_id"]
+
+        try:
+            cmt = models.Comments(user_id=user_id, post_id=post_id, comment=content, if_anonymous=if_anonymous)
+            cmt.save()
+
+        except Exception as e:
+            res['status'] = 404
+            res['error'] = str(e)
+            return HttpResponse(json.dumps(res), content_type='application/json')
+
+    res['status'] = 200
+    res['error'] = ""
+    return HttpResponse(json.dumps(res), content_type='application/json')
+
+
+def like_post(request):
+    res = {}
+    if request.method == "POST":
+        token = request.POST.get('token')
+        post_id = request.POST.get('post_id')
+
+        # 获取token值对应的user_id
+        usr = models.Users.objects.filter(token=token)
+        user_id = usr[0]["user_id"]
+
+        try:
+            models.LikedPosts.objects.create(user_id=user_id, post_id=post_id)
+
+        except Exception as e:
+            res['status'] = 404
+            res['error'] = str(e)
+            return HttpResponse(json.dumps(res), content_type='application/json')
+
+    res['status'] = 200
+    res['error'] = ""
+    return HttpResponse(json.dumps(res), content_type='application/json')
+
+
+def like_comment(request):
+    res = {}
+    if request.method == "POST":
+        token = request.POST.get('token')
+        comment_id = request.POST.get('comment_id')
+
+        # 获取token值对应的user_id
+        usr = models.Users.objects.filter(token=token)
+        user_id = usr[0]["user_id"]
+
+        try:
+            models.LikedComments.objects.create(user_id=user_id, comment_id=comment_id)
+
+        except Exception as e:
+            res['status'] = 404
+            res['error'] = str(e)
+            return HttpResponse(json.dumps(res), content_type='application/json')
+
+    res['status'] = 200
+    res['error'] = ""
+    return HttpResponse(json.dumps(res), content_type='application/json')
