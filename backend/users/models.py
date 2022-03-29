@@ -19,8 +19,8 @@ class Users(models.Model):
 class Posts(models.Model):
     post_id = models.IntegerField(primary_key=True)
     post_time = models.TimeField(auto_now_add=True)
-    page_coordinates_x = models.IntegerField()
-    page_coordinates_y = models.IntegerField()
+    page_coordinates_x = models.IntegerField(default=None)
+    page_coordinates_y = models.IntegerField(default=None)
     rotation_angle = models.IntegerField(default=0)
     picture_url = models.URLField()
     background_url = models.URLField()
@@ -41,7 +41,7 @@ class Comments(models.Model):
     if_anonymous = models.BooleanField(default=False)
     post_id = models.ForeignKey('Posts', on_delete=models.CASCADE)
     # like_number = models.IntegerField()
-    comment_time = models.TimeField()
+    comment_time = models.TimeField(default=None)
 
     class Meta:
         db_table = 'comments'
