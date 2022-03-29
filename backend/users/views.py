@@ -3,7 +3,6 @@ from . import models
 import json
 import os
 import hashlib
-from django.db import connection
 
 
 def md5(pwd):
@@ -84,8 +83,15 @@ def login(request):
     return HttpResponse(json.dumps(res), content_type='application/json')
 
 
+def upload_post(request):
+    res = {}
+    res = json.loads(json.dumps(res))
+    return HttpResponse(json.dumps(res), content_type='application/json')
+
+
 def comment(request):
     res = {}
+    res = json.loads(json.dumps(res))
     if request.method == "POST":
         token = request.POST.get('token')
         post_id = request.POST.get('post_id')
@@ -112,6 +118,7 @@ def comment(request):
 
 def like_post(request):
     res = {}
+    res = json.loads(json.dumps(res))
     if request.method == "POST":
         token = request.POST.get('token')
         post_id = request.POST.get('post_id')
@@ -135,6 +142,7 @@ def like_post(request):
 
 def like_comment(request):
     res = {}
+    res = json.loads(json.dumps(res))
     if request.method == "POST":
         token = request.POST.get('token')
         comment_id = request.POST.get('comment_id')
@@ -153,4 +161,46 @@ def like_comment(request):
 
     res['status'] = 200
     res['error'] = ""
+    return HttpResponse(json.dumps(res), content_type='application/json')
+
+
+def show_yourself(request):
+    res = {}
+    res = json.loads(json.dumps(res))
+    return HttpResponse(json.dumps(res), content_type='application/json')
+
+
+def rename(request):
+    res = {}
+    res = json.loads(json.dumps(res))
+    return HttpResponse(json.dumps(res), content_type='application/json')
+
+
+def change_profile(request):
+    res = {}
+    res = json.loads(json.dumps(res))
+    return HttpResponse(json.dumps(res), content_type='application/json')
+
+
+def delete_comment(request):
+    res = {}
+    res = json.loads(json.dumps(res))
+    return HttpResponse(json.dumps(res), content_type='application/json')
+
+
+def rm_like_post(request):
+    res = {}
+    res = json.loads(json.dumps(res))
+    return HttpResponse(json.dumps(res), content_type='application/json')
+
+
+def rm_like_comment(request):
+    res = {}
+    res = json.loads(json.dumps(res))
+    return HttpResponse(json.dumps(res), content_type='application/json')
+
+
+def delete_post(request):
+    res = {}
+    res = json.loads(json.dumps(res))
     return HttpResponse(json.dumps(res), content_type='application/json')
