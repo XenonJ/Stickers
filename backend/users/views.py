@@ -165,6 +165,9 @@ def comment(request):
             )
             cmt.save()
 
+            # 保存该帖子的最后更改时间
+            models.Posts.objects.get(post_id=post_id).save()
+
         except Exception as e:
             res['status'] = 404
             res['error'] = str(e)
@@ -192,6 +195,9 @@ def like_post(request):
                 post_id=post_id
             )
 
+            # 保存该帖子的最后更改时间
+            models.Posts.objects.get(post_id=post_id).save()
+
         except Exception as e:
             res['status'] = 404
             res['error'] = str(e)
@@ -218,6 +224,13 @@ def like_comment(request):
                 user_id=user_id,
                 comment_id=comment_id
             )
+
+            # 获取评论对应的帖子id
+            cmt = models.Comments.objects.get(comment_id=comment_id)
+            post_id = cmt["post_id"]
+
+            # 保存该帖子的最后更改时间
+            models.Posts.objects.get(post_id=post_id).save()
 
         except Exception as e:
             res['status'] = 404
