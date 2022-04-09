@@ -423,3 +423,10 @@ def delete_post(request):
             return HttpResponse(json.dumps(res), content_type='application/json')
 
     return HttpResponse(json.dumps(res), content_type='application/json')
+
+
+def notice(request):
+    res = {}
+    res = json.loads(json.dumps(res))
+
+    return HttpResponse(json.dumps(res), content_type='application/json')

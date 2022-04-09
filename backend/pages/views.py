@@ -40,6 +40,7 @@ def main_page(request):
                 "user_name": user_name,
                 "profile_url": profile_url,
             }
+
             res["data"] = data
             res["status"] = 200
             res["error"] = ""
@@ -62,48 +63,31 @@ def myself(request):
 
         try:
             # 处理user
-            usr = models.Users.objects.filter(token=token)
-            user_name = usr[0]["user_name"]
-            profile_url = usr[0]["image_url"]
-            show_yourself = usr[0]["show_yourself"]
+            usr = models.Users.objects.get(token=token)
+            user_name = usr["user_name"]
+            profile_url = usr["image_url"]
+            show_yourself = usr["show_yourself"]
             data["user"] = {
                 "user_name": user_name,
                 "profile_url": profile_url,
                 "show_yourself": show_yourself,
             }
 
-            # 处理likes
-            likes = {}
-            likes = json.loads(json.dumps(likes))
-
-            # 处理likes_posts
-            posts = models.LikedPosts.objects.filter(user_id=usr[0]["user_id"])
-            ls = []
-            for post in posts:
-                picture_url = models.Posts.objects.get(post_id=post["post_id"])["picture_url"]
-                ls.append({
-                    "post_id": post["post_id"],
-                    "picture_url": picture_url,
-                    "like_time": post["like_time"]
+            # 处理posts
+            posts = []
+            psts = models.Posts.objects.filter(user_id=usr["user_id"]).order_by("-post_time")
+            num = min(4, psts.count())
+            for i in range(num):
+                posts.append({
+                    "post_id": psts[i]["post_id"],
+                    "picture_url": psts[i]["picture_url"],
+                    "post_time": psts[i]["post_time"],
                 })
-            likes["posts"] = ls
+            data["posts"] = posts
 
-            # 处理likes_comments
-            cmts = models.LikedComments.objects.filter(user_id=usr[0]["user_id"])
-            ls = []
-            for cmt in cmts:
-                comment = models.Comments.objects.get(comment_id=cmt["comment_id"])["comment"]
-                ls.append({
-                    "comment_id": cmt["comment_id"],
-                    "comment": comment,
-                    "like_time": cmt["like_time"]
-                })
-            likes["comments"] = ls
-
-            data["likes"] = likes
-
-            # 处理comments
-            cmts = models.Comments.objects.filter(user_id=usr[0]["user_id"])
+            res["data"] = data
+            res["status"] = 200
+            res["error"] = ""
 
         except Exception as e:
             res["status"] = 404
@@ -115,13 +99,42 @@ def myself(request):
 def user_detail(request):
     res = {}
     res = json.loads(json.dumps(res))
+    if request.method == "GET":
+        user_id = request.GET.get("user_id")
+        data = {}
+        data = json.loads((json.dumps(data)))
 
-    return HttpResponse(json.dumps(res), content_type='application/json')
+        try:
+            # 处理user
+            usr = models.Users.objects.get(user_id=user_id)
+            user_name = usr["user_name"]
+            profile_url = usr["image_url"]
+            show_yourself = usr["show_yourself"]
+            data["user"] = {
+                "user_name": user_name,
+                "profile_url": profile_url,
+                "show_yourself": show_yourself,
+            }
 
+            # 处理posts
+            posts = []
+            psts = models.Posts.objects.filter(user_id=usr["user_id"]).order_by("-post_time")
+            num = min(4, psts.count())
+            for i in range(num):
+                posts.append({
+                    "post_id": psts[i]["post_id"],
+                    "picture_url": psts[i]["picture_url"],
+                    "post_time": psts[i]["post_time"],
+                })
+            data["posts"] = posts
 
-def notice(request):
-    res = {}
-    res = json.loads(json.dumps(res))
+            res["data"] = data
+            res["status"] = 200
+            res["error"] = ""
+
+        except Exception as e:
+            res["status"] = 404
+            res["error"] = e
 
     return HttpResponse(json.dumps(res), content_type='application/json')
 
@@ -129,5 +142,77 @@ def notice(request):
 def post_detail(request):
     res = {}
     res = json.loads(json.dumps(res))
+    if request.method == "GET":
+        token = request.GET.get('token')
+        post_id = request.GET.get('post_id')
+        data = {}
+        data = json.loads((json.dumps(data)))
+
+        try:
+            # 处理post
+            pst = models.Posts.objects.get(post_id=post_id)
+            usr_s = models.Users.objects.get(token=token)               # 浏览者
+            usr_p = models.Users.objects.get(user_id=pst["user_id"])    # 发帖人
+            cmts = models.Comments.objects.filter(post_id=post_id)
+
+            if_self = usr_p["user_id"] == usr_s["user_id"]
+            post_time = pst["post_time"]
+            picture_url = pst["picture_url"]
+            background_url = pst["background_url"]
+            like_num = models.LikedPosts.objects.filter(post_id=post_id).count()
+            comment_num = cmts.count()
+            if_anonymous = pst["if_anonymous"]
+            user_id = usr_p["user_id"]
+            user_name = usr_p["user_name"]
+            profile_url = usr_p["image_url"]
+
+            data["post"] = {
+                "if_self": if_self,
+                "post_time": post_time,
+                "picture_url": picture_url,
+                "background_url": background_url,
+                "like_num": like_num,
+                "comment_num": comment_num,
+                "if_anonymous": if_anonymous,
+                "user_id": user_id,
+                "user_name": user_name,
+                "profile_url": profile_url,
+            }
+
+            # 处理comments
+            comments = []
+            for cmt in cmts:
+                usr_c = models.Users.objects.get(user_id=cmt["user_id"])    # 评论者
+
+                if_self = usr_s["user_id"] == usr_c["user_id"]
+                comment_id = cmt["comment_id"]
+                comment_time = cmt["comment_time"]
+                comment = cmt["comment"]
+                like_num = models.LikedComments.objects.filter(comment_id=comment_id).count()
+                if_anonymous = cmt["if_anonymous"]
+                user_id = usr_c["user_id"]
+                user_name = usr_c["user_name"]
+                profile_url = usr_c["image_url"]
+
+                comments.append({
+                    "if_self": if_self,
+                    "comment_id": comment_id,
+                    "comment_time": comment_time,
+                    "comment": comment,
+                    "like_num": like_num,
+                    "if_anonymous": if_anonymous,
+                    "user_id": user_id,
+                    "user_name": user_name,
+                    "profile_url": profile_url,
+                })
+            data["comments"] = comments
+
+            res["data"] = data
+            res["status"] = 200
+            res["error"] = ""
+
+        except Exception as e:
+            res["status"] = 404
+            res["error"] = e
 
     return HttpResponse(json.dumps(res), content_type='application/json')

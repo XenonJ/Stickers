@@ -15,4 +15,5 @@ urlpatterns = [
     path('rm_like_post/', views.rm_like_post),
     path('rm_like_comment/', views.rm_like_comment),
     path('delete_post/', views.delete_post),
+    path('comment/', views.comment),
 ]
