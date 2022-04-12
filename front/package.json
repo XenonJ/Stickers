@@ -12,18 +12,16 @@
     "@quasar/extras": "^1.0.0",
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
-    "quasar": "^2.6.0",
-    "vue": "^3.0.0",
-    "vue-router": "^4.0.0",
-    "vuex": "^4.0.1"
+    "element-ui": "^2.15.6",
+    "quasar": "^1.0.0",
+    "vue-i18n": "^8.0.0"
   },
   "devDependencies": {
-    "@quasar/app-webpack": "^3.0.0",
-    "@types/node": "^12.20.21",
-    "unplugin-auto-import": "^0.7.0",
-    "unplugin-vue-components": "^0.19.0"
+    "@quasar/app": "^2.0.0",
+    "babel-plugin-component": "^1.1.1"
   },
   "browserslist": [
+    "ie >= 11",
     "last 10 Chrome versions",
     "last 10 Firefox versions",
     "last 4 Edge versions",
@@ -35,7 +33,7 @@
     "last 5 Opera versions"
   ],
   "engines": {
-    "node": ">= 12.22.1",
+    "node": ">= 10.18.1",
     "npm": ">= 6.13.4",
     "yarn": ">= 1.21.1"
   }
