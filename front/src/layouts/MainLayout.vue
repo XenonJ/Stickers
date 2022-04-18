@@ -16,33 +16,35 @@
           class="bg-primary text-white"
           align="right"
         >
+
           <q-btn round align="right">
             <q-avatar size="42px">
               <img src="https://cdn.quasar.dev/img/avatar2.jpg">
             </q-avatar>
           </q-btn>
+
           <q-btn-dropdown auto-close stretch flat label="热门">
             <q-list>
               <q-item clickable @click="tab = 'movies'">
                 <q-item-section>Movies</q-item-section>
               </q-item>
-
               <q-item clickable @click="tab = 'photos'">
                 <q-item-section>Photos</q-item-section>
               </q-item>
             </q-list>
           </q-btn-dropdown>
+
           <q-btn-dropdown auto-close stretch flat label="消息">
             <q-list>
               <q-item clickable @click="tab = 'movies'">
                 <q-item-section>Movies</q-item-section>
               </q-item>
-
               <q-item clickable @click="tab = 'photos'">
                 <q-item-section>Photos</q-item-section>
               </q-item>
             </q-list>
           </q-btn-dropdown>
+
         </q-tabs>
 
       </q-toolbar>
