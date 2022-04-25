@@ -8,6 +8,15 @@ const routes = [
     ]
   },
 
+  {
+    path: '/111',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [
+      { path: '', component: () => import('pages/myself.vue') }
+    ]
+  },
+
+
   // Always leave this as last one,
   // but you can also remove it
   {
