@@ -5,7 +5,13 @@
       :width="canvasWidth"
       :height="canvasHeight"
     />
-    <img src="http://127.0.0.1:8000/images/a.jpg" id="a" v-show="false">
+    <img
+      v-for="post in posts"
+      :key="post.post_id"
+      :src="post.picture_url"
+      :id="post.post_id"
+      v-show="false"
+    >
   </q-page>
 </template>
 
@@ -18,23 +24,34 @@ export default {
       canvasWidth: 1920,
       canvasHeight: 1080,
       ctx: {},
+      numPost: 2,
       posts: [
         {
           post_id: 111,
-          x_coordinates: 0,
-          y_coordinates: 0,
-          rotation_angle: 0,
+          x_coordinates: 100,
+          y_coordinates: 200,
+          rotation_angle: 30,
           picture_url: "http://127.0.0.1:8000/images/a.jpg",
+          background_url: "",
+        },
+        {
+          post_id: 222,
+          x_coordinates: 1200,
+          y_coordinates: 600,
+          rotation_angle: -30,
+          picture_url: "http://127.0.0.1:8000/images/b.jpg",
           background_url: "",
         },
       ],
       user: {
-        user_name: "",
+        user_name: "1",
         profile_url: "",
       },
     }
   },
   mounted(){
+    fabric.Object.prototype
+    var _this = this;
     var canvas = new fabric.Canvas('canvas');
     canvas.on('mouse:wheel', function(opt) {
       var delta = opt.e.deltaY;
@@ -47,11 +64,16 @@ export default {
       opt.e.stopPropagation();
     });
     canvas.on('mouse:down', function(opt) {
-      var evt = opt.e;
-      this.isDragging = true;
-      this.selection = false;
-      this.lastPosX = evt.clientX;
-      this.lastPosY = evt.clientY;
+      // if (opt.target) {
+      //   console.log(opt.target);
+      // }
+      // else{
+        var evt = opt.e;
+        this.isDragging = true;
+        this.selection = false;
+        this.lastPosX = evt.clientX;
+        this.lastPosY = evt.clientY;
+      // }
     });
     canvas.on('mouse:move', function(opt) {
       if (this.isDragging) {
@@ -71,19 +93,28 @@ export default {
       this.isDragging = false;
       this.selection = true;
     });
-    var img1 = document.getElementById('a');
-    var imgInstance = new fabric.Image(img1, {
-      left: 100,
-      top: 100,
-      angle: 30,
-      opacity: 0.85,
-    })
-    imgInstance.set('selectable', false);
-    canvas.add(imgInstance);
+    _this.draw(canvas);
   },
   methods: {
-    draw() {
-
+    draw(canvas) {
+      var post;
+      var _this = this;
+      for(var i = 0; i < _this.numPost; i++){
+        post = _this.posts[i];
+        var img = document.getElementById(post.post_id);
+        var imageInstance = new fabric.Image(img, {
+          left: post.x_coordinates,
+          top: post.y_coordinates,
+          angle: post.rotation_angle,
+          hoverCursor: "pointer",
+          selectable: false,
+        });
+        const num = new String(post.post_id);
+        imageInstance.on("mousedown", function(opt){
+          console.log(num);
+        })
+        canvas.add(imageInstance);
+      }
     },
   }
 }
