@@ -4,11 +4,8 @@
       id="canvas"
       :width="canvasWidth"
       :height="canvasHeight"
-      :style="'width:'+canvasWidth/2+'px;height:'+canvasHeight/2+'px;'"
-      @mousedown="canvasDown($event)"
-      @mouseup="canvasUp($event)"
-      @mousemove="canvasMove($event)"
     />
+    <img src="http://127.0.0.1:8000/images/a.jpg" id="a" v-show="false">
   </q-page>
 </template>
 
@@ -20,80 +17,73 @@ export default {
     return {
       canvasWidth: 1920,
       canvasHeight: 1080,
-      reactPos: {
-        x: 0,
-        y: 0,
-      },
-      isMouseDown: false,
-      transX: 0,
-      transY: 0,
-      PosX: 0,
-      PosY: 0,
       ctx: {},
+      posts: [
+        {
+          post_id: 111,
+          x_coordinates: 0,
+          y_coordinates: 0,
+          rotation_angle: 0,
+          picture_url: "http://127.0.0.1:8000/images/a.jpg",
+          background_url: "",
+        },
+      ],
+      user: {
+        user_name: "",
+        profile_url: "",
+      },
     }
   },
   mounted(){
-    const canvas = document.querySelector('#canvas');
-    this.ctx = canvas.getContext('2d');
-    this.draw();
+    var canvas = new fabric.Canvas('canvas');
+    canvas.on('mouse:wheel', function(opt) {
+      var delta = opt.e.deltaY;
+      var zoom = canvas.getZoom();
+      zoom *= 0.999 ** delta;
+      if (zoom > 20) zoom = 20;
+      if (zoom < 0.01) zoom = 0.01;
+      canvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
+      opt.e.preventDefault();
+      opt.e.stopPropagation();
+    });
+    canvas.on('mouse:down', function(opt) {
+      var evt = opt.e;
+      this.isDragging = true;
+      this.selection = false;
+      this.lastPosX = evt.clientX;
+      this.lastPosY = evt.clientY;
+    });
+    canvas.on('mouse:move', function(opt) {
+      if (this.isDragging) {
+        var e = opt.e;
+        var vpt = this.viewportTransform;
+        vpt[4] += e.clientX - this.lastPosX;
+        vpt[5] += e.clientY - this.lastPosY;
+        this.requestRenderAll();
+        this.lastPosX = e.clientX;
+        this.lastPosY = e.clientY;
+      }
+    });
+    canvas.on('mouse:up', function(opt) {
+      // on mouse up we want to recalculate new interaction
+      // for all objects, so we call setViewportTransform
+      this.setViewportTransform(this.viewportTransform);
+      this.isDragging = false;
+      this.selection = true;
+    });
+    var img1 = document.getElementById('a');
+    var imgInstance = new fabric.Image(img1, {
+      left: 100,
+      top: 100,
+      angle: 30,
+      opacity: 0.85,
+    })
+    imgInstance.set('selectable', false);
+    canvas.add(imgInstance);
   },
   methods: {
     draw() {
-      var _this = this
-      var ctx = _this.ctx
-      ctx.clearRect(0, 0, _this.canvasWidth, _this.canvasHeight)
-      var img = new Image();
 
-      img.onload = function(){
-        ctx.drawImage(img, _this.transX + _this.PosX, _this.transY + _this.PosY);
-        console.log(_this.transX, _this.transY)
-      }
-      img.src = 'http://127.0.0.1:8000/images/a.jpg';
-    },
-
-    canvasDown(e){
-      this.isMouseDown = true;
-
-      const {target} = e
-
-      this.reactPos.x = e.clientX
-      this.reactPos.y = e.clientY
-      console.log(this.reactPos.x, this.reactPos.y)
-      this.draw()
-    },
-
-    canvasMove(e){
-      if(this.isMouseDown){
-
-        const mouseX = e.clientX
-        const mouseY = e.clientY
-
-        const {x, y} = this.reactPos
-
-        var DivX = mouseX - x
-        var DivY = mouseY - y
-
-        this.transX = DivX
-        this.transY = DivY
-
-        this.draw()
-
-        console.log(DivX, DivY)
-      }
-    },
-
-    canvasUp(e){
-      const mouseX = e.clientX
-      const mouseY = e.clientY
-
-      console.log(mouseX, mouseY)
-
-      this.PosX += this.transX
-      this.PosY += this.transY
-      this.transX = 0
-      this.transY = 0
-
-      this.isMouseDown = false
     },
   }
 }

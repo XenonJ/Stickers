@@ -24,6 +24,7 @@ module.exports = function (/* ctx */) {
       'i18n',
       'axios',
       'element',
+      'fabric',
     ],
 
     // https://v1.quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css

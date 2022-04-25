@@ -13,11 +13,13 @@
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
     "element-ui": "^2.15.6",
+    "fabric": "^5.2.1",
     "quasar": "^1.0.0",
     "vue-i18n": "^8.0.0"
   },
   "devDependencies": {
     "@quasar/app": "^2.0.0",
+    "@types/fabric": "^4.5.7",
     "babel-plugin-component": "^1.1.1"
   },
   "browserslist": [
