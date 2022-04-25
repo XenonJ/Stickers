@@ -12,9 +12,10 @@ class Users(models.Model):
     Student_id = models.IntegerField(default=0)
     user_permissions = models.CharField(max_length=20)
     show_yourself = models.CharField(max_length=100)
+    Latest_CheckTime=models.TimeField(auto_now=True)
 
     class Meta:
-        managed = False
+        # managed = False
         db_table = 'users'
 
 
@@ -24,18 +25,24 @@ class Posts(models.Model):
     page_coordinates_x = models.IntegerField(default=None)
     page_coordinates_y = models.IntegerField(default=None)
     rotation_angle = models.IntegerField(default=0)
-    picture_url = models.URLField()
     background_url = models.URLField()
-    # like_number = models.IntegerField()
-    # comment_number = models.IntegerField()
+    text_or_pic=models.BooleanField(default=True)
+    picture_url = models.URLField()
+
+    text = models.CharField(max_length=500)
+    font_size = models.CharField(max_length=500)
+    font_color = models.CharField(max_length=500)
+    font_format = models.CharField(max_length=500)
+
     if_anonymous = models.BooleanField(default=False)
     # post_user_id=models.CharField(max_length=50)
     user_id = models.ForeignKey('Users', on_delete=models.CASCADE, default='', db_column='user_id')
     latest_ActTime = models.TimeField(auto_now=True)
 
     class Meta:
-        managed = False
-        db_table = 'posts'
+        db_table='posts'
+
+
 
 
 class Comments(models.Model):
