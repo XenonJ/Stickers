@@ -19,7 +19,8 @@
         </div>
         </el-col>  
         <el-col :span="12">
-        <div>zzh&nbsp;<el-link icon="el-icon-edit">编辑</el-link> </div>
+        <div>zzh&nbsp; </div>
+        <div>&nbsp; </div>
         <div>0000000000</div>
         </el-col> 
         </el-row>
@@ -30,7 +31,7 @@
         <el-input
           type="textarea"
           style="width: 800px"
-          placeholder="简单介绍一下你自己吧"
+          placeholder="财大骚0zzh"
           v-model="textarea"
           maxlength="50"
           show-word-limit

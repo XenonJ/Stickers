@@ -4,7 +4,10 @@ const routes = [
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { path: '', component: () => import('pages/Index.vue') }
+      { path: '', component: () => import('pages/Index.vue') },
+      { path: 'comment', component: () => import('pages/comment.vue') },
+      { path: 'upload_word', component: () => import('pages/upload_word.vue') },
+      { path: 'upload_picture', component: () => import('pages/upload_picture.vue') }
     ]
   },
 
@@ -16,6 +19,21 @@ const routes = [
     ]
   },
 
+  {
+    path: '/222',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [
+      { path: '', component: () => import('pages/upload_word.vue') }
+    ]
+  },
+
+  {
+    path: '/333',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [
+      { path: '', component: () => import('pages/others.vue') }
+    ]
+  },
 
   // Always leave this as last one,
   // but you can also remove it
