@@ -1,5 +1,5 @@
 <template>
-  <q-page class="flex flex-center">
+  <q-page padding class="fixed fixed-center">
     <div style="box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)">
       <el-container style="width: 800px">
         <el-button-group>
@@ -21,8 +21,10 @@
             position: relative;
             top: 10px;
             left: 300px;
-            width: 500px;
-            height: 160px;
+            right: 300px;
+            width: 800px;
+            height: 200px;
+            border: 1px;
           "
         >
           <el-upload
@@ -62,14 +64,9 @@
             <img width="100%" :src="dialogImageUrl" alt="" />
           </el-dialog>
         </div>
-        <el-container style="height: 200px">
+        <el-container style="height: 200px; margin-top: 10px">
           <el-aside width="200px">
-            <el-select
-              v-model="value1"
-              clearable
-              placeholder="请选择背景"
-              size="medium"
-            >
+            <el-select v-model="value1" placeholder="请选择背景" size="medium">
               <el-option
                 v-for="item in options"
                 :key="item.value"
@@ -213,14 +210,17 @@ export default {
   background-color: #ffffff;
   color: #333;
   text-align: center;
-  line-height: 150px;
+  line-height: 40px;
 }
 .el-main {
-  background-color: #e9eef3;
+  background-color: #ffffff;
   color: #333;
   text-align: center;
-  line-height: 80px;
+  line-height: 100px;
   font-weight: 400;
+  border: solid 1px #dcd9d9;
+  margin-right: 15px;
+  margin-left: 10px;
 }
 .el-row {
   margin-bottom: 20px;
@@ -248,5 +248,9 @@ export default {
 .el-radio {
   display: block;
   margin-left: 0%;
+}
+.el-select {
+  margin-left: 15px;
+  margin-right: 10px;
 }
 </style>

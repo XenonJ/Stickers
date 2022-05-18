@@ -15,6 +15,7 @@
               <span class="author-name">{{ post.authorName }}</span>
               <span class="author-time">{{ post.postTime }}</span>
             </div>
+            
 
             <div class="post-close">
               <el-button

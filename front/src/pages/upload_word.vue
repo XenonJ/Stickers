@@ -1,5 +1,5 @@
 <template>
-  <q-page class="flex flex-center">
+  <q-page padding class="fixed fixed-center">
     <div style="box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)">
       <el-container style="width: 800px">
         <el-button-group>
@@ -22,30 +22,6 @@
             :dense="$q.screen.lt.md"
             :toolbar="[
               [
-                {
-                  label: $q.lang.editor.align,
-                  icon: $q.iconSet.editor.align,
-                  fixedLabel: true,
-                  list: 'only-icons',
-                  options: ['left', 'center', 'right', 'justify'],
-                },
-              ],
-              [
-                'bold',
-                'italic',
-                'strike',
-                'underline',
-                'subscript',
-                'superscript',
-              ],
-              ['token', 'hr', 'link', 'custom_btn'],
-              [
-                {
-                  label: $q.lang.editor.formatting,
-                  icon: $q.iconSet.editor.formatting,
-                  list: 'no-icons',
-                  options: ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'code'],
-                },
                 {
                   label: $q.lang.editor.fontSize,
                   icon: $q.iconSet.editor.fontSize,
@@ -79,9 +55,8 @@
                     'verdana',
                   ],
                 },
-                'removeFormat',
               ],
-              ['quote', 'unordered', 'ordered', 'outdent', 'indent'],
+              ['color_picker'],
             ]"
             :fonts="{
               arial: 'Arial',
@@ -96,10 +71,10 @@
           />
         </div>
 
-        <el-container>
+        <el-container style="height: 200px">
           <el-aside width="200px">
             <el-select
-              :popper-append-to-body="false"
+
               v-model="value1"
               placeholder="请选择背景"
               size="medium"
@@ -115,18 +90,17 @@
           </el-aside>
 
           <el-main>
-            <div class="demo-image">
-              <div class="block" v-for="fit in fits" :key="fit">
-                <span class="demonstration">{{ fit }}</span>
-                <el-image
-                  style="width: 150px; height: 200px"
-                  :src="url"
-                  :fit="fill"
-                ></el-image>
-              </div>
-              <div>
-                <el-slider v-model="value2" vertical height="200px" :max="360">
-                </el-slider>
+            <div style="height:200px,width:560px">
+              <div class="demo-image">
+                <div class="block" v-for="fit in fits" :key="fit">
+                  <span class="demonstration">{{ fit }}</span>
+                  <el-image
+                    style="width: 150px; height: 200px"
+                    :src="url"
+                    :fit="fill"
+                  ></el-image>
+                </div>
+                <div></div>
               </div>
             </div>
           </el-main>
@@ -225,7 +199,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .el-header,
 .el-footer {
   background-color: #ffffff;
@@ -237,15 +211,18 @@ export default {
 .el-aside {
   background-color: #ffffff;
   color: #333;
-  text-align: center;
-  line-height: 80px;
+
+  line-height: 40px;
 }
 .el-main {
-  background-color: #e9eef3;
+  background-color: #ffffff;
   color: #333;
   text-align: center;
   line-height: 80px;
   font-weight: 400;
+  border: solid 1px #dcd9d9;
+  margin-right: 15px;
+  margin-left: 10px;
 }
 .el-row {
   margin-bottom: 20px;
@@ -275,6 +252,10 @@ export default {
   margin-left: 0%;
 }
 .el-select {
-  size: small;
+  margin-left: 15px;
+  margin-right: 10px
 }
+
+
+
 </style>

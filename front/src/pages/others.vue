@@ -1,37 +1,47 @@
 +<template>
   <q-page class="flex flex-center">
     <div style="box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)">
-      <el-container style="width: 800px">
+      <el-container style="width: 400px">
         <el-button-group>
-          <el-button type="primary"  style="width: 800px">
+          <el-button type="primary"  style="width: 400px">
             用户详细信息
           </el-button>
         </el-button-group>
 
         <el-container>
-        <el-row class="demo-avatar demo-basic">
-        <el-col :span="12">
-        <div class="demo-basic--circle">
-        <div class="block"><el-avatar :size="60" :src="circleUrl"></el-avatar></div>
-        <div class="block" v-for="size in sizeList" :key="size">
-          <el-avatar :size="size" :src="circleUrl"></el-avatar>
-        </div>
-        </div>
-        </el-col>  
-        <el-col :span="12">
-        <div>zzh&nbsp; </div>
-        <div>&nbsp; </div>
-        <div>0000000000</div>
-        </el-col> 
-        </el-row>
+          
+          <div class="post-title">
+            <el-avatar
+              shape="circle"
+              :size="size"
+              :src="post.header"
+              class="header-img"
+              @click.native="addRoute1"
+            ></el-avatar>
+            <div class="post-info">
+              <span class="author-name">{{ post.authorName }}</span>
+              <span class="author-time">{{ post.id }}</span>
+            </div>
+            
+
+            <div class="post-close">
+              <el-button
+                size="medium"
+                round
+                class="el-icon-close"
+                @click="addRoute2"
+              ></el-button>
+            </div>
+          </div>
+        
         </el-container>
         
 
         <el-container>
         <el-input
           type="textarea"
-          style="width: 800px"
-          placeholder="财大骚0zzh"
+          style="width: 400px"
+          placeholder="简单介绍一下你自己吧"
           v-model="textarea"
           maxlength="50"
           show-word-limit
@@ -57,15 +67,8 @@
         </el-timeline>
         </el-container>
 
-      <el-footer>
-
-          <div>
-            <el-button type="danger" plain @click="open2">退出</el-button>
-          </div>
-        </el-footer>
-
-        
-        
+      <el-footer>  
+     </el-footer>
       </el-container>
     </div>
   </q-page>
@@ -75,6 +78,18 @@
 export default {
   data() {
     return {
+      post: {
+        header: "",
+        authorName: "zzh",
+        id: "00000000",
+        likes: "28",
+        flg: true,
+        pictureUrl:
+          "https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg",
+        previewUrl: [
+          "https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg",
+        ],
+      },
       activities: [{
           content: '上传了帖子',
           timestamp: '2022-01-01 20:46',
@@ -112,11 +127,9 @@ export default {
   },
   methods: {
     addRoute1() {
-      this.$router.push("./upload_word");
+      this.$router.push("./Info");
     },
-    addRoute2() {
-      this.$router.push("./upload_picture");
-    },
+    addRoute2() {},
     open2() {
       this.$confirm("返回主界面?", "退出", {
         confirmButtonText: "确定",
@@ -130,7 +143,39 @@ export default {
 };
 </script>
 
-<style>
+<style lang="stylus" scoped>
+.post-title
+    width:120%
+    margin-left:0px
+    margin-right:0px
+    padding 10px 5px 15px 20px;
+    .header-img
+        display inline-block
+        vertical-align top
+        cursor pointer
+
+    .post-info
+        display inline-block
+        margin-left 10px
+        width 60%
+        height 50px
+        line-height 20px
+        >span
+            display block
+            overflow hidden
+            white-space nowrap
+            text-overflow ellipsis
+        .author-name
+            color #000
+            font-size 18px
+            font-weight bold
+        .author-time
+            font-size 14px
+            color #000
+    .post-close
+        display inline-block
+        padding 10px
+        vertical-align top
 .el-header,
 .el-footer {
   background-color: #ffffff;
