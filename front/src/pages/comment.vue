@@ -1,6 +1,6 @@
 <template>
-  <q-page class="flex flex-center">
-    <div>
+  <!-- <q-page class="flex flex-center"> -->
+    <div class="cmt">
       <el-container>
         <el-header>
           <div class="post-title">
@@ -132,7 +132,7 @@
         </div>
       </div>
     </div>
-  </q-page>
+  <!-- </q-page> -->
 </template>
 
 <script>
@@ -330,7 +330,10 @@ export default {
 
 <style lang="stylus" scoped>
 
-
+.cmt
+    position: fixed;
+    top: 0;
+    left: 0;
 .post-title
     width:120%
     margin-left:-50px

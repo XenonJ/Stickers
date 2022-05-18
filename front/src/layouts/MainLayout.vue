@@ -51,7 +51,7 @@
 
     </q-header>
 
-    <q-page-container>
+    <q-page-container style="overflow: hidden">
       <router-view />
     </q-page-container>
 

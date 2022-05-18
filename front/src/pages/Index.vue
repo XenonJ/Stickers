@@ -1,10 +1,13 @@
 <template>
-  <q-page class="flex flex-center">
+  <q-page class="flex flex-center" style="overflow: hidden">
     <canvas
       id="canvas"
       :width="canvasWidth"
       :height="canvasHeight"
+      style="overflow: hidden"
     />
+    <ArticleComment v-show="showPost">
+    </ArticleComment>
     <img
       v-for="post in posts"
       :key="post.post_id"
@@ -16,14 +19,18 @@
 </template>
 
 <script type="text/javascript">
-
+import ArticleComment from 'src/pages/comment.vue'
 export default {
   name: 'PageIndex',
+  components:{
+    ArticleComment,
+  },
   data() {
     return {
       canvasWidth: 1920,
       canvasHeight: 1080,
       ctx: {},
+      showPost: false,
       numPost: 2,
       posts: [
         {
@@ -112,6 +119,7 @@ export default {
         const num = new String(post.post_id);
         imageInstance.on("mousedown", function(opt){
           console.log(num);
+          _this.showPost = !_this.showPost;
         })
         canvas.add(imageInstance);
       }

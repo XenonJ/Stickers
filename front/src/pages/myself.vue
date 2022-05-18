@@ -1,4 +1,4 @@
-+<template>
+<template>
   <q-page class="flex flex-center">
     <div style="box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)">
       <el-container style="width: 800px">
@@ -17,14 +17,14 @@
           <el-avatar :size="size" :src="circleUrl"></el-avatar>
         </div>
         </div>
-        </el-col>  
+        </el-col>
         <el-col :span="12">
         <div>zzh&nbsp;<el-link icon="el-icon-edit">编辑</el-link> </div>
         <div>0000000000</div>
-        </el-col> 
+        </el-col>
         </el-row>
         </el-container>
-        
+
 
         <el-container>
         <el-input
@@ -63,8 +63,8 @@
           </div>
         </el-footer>
 
-        
-        
+
+
       </el-container>
     </div>
   </q-page>
