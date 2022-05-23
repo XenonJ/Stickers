@@ -1,6 +1,6 @@
 <template>
-  <!-- <q-page class="flex flex-center"> -->
-    <div class="cmt">
+  <q-page padding class="flex flex-center">
+    <div>
       <el-container>
         <el-header>
           <div class="post-title">
@@ -15,7 +15,6 @@
               <span class="author-name">{{ post.authorName }}</span>
               <span class="author-time">{{ post.postTime }}</span>
             </div>
-            
 
             <div class="post-close">
               <el-button
@@ -30,9 +29,8 @@
 
         <el-main>
           <div class="demo-image__placeholder">
-            <span class="demonstration"></span>
             <el-image
-              style="width: 550px;  margin-left:50px margin-right:50px"
+              style="width: 550px"
               :src="post.pictureUrl"
               :preview-src-list="post.previewUrl"
             ></el-image>
@@ -133,7 +131,7 @@
         </div>
       </div>
     </div>
-  <!-- </q-page> -->
+  </q-page>
 </template>
 
 <script>
@@ -331,29 +329,32 @@ export default {
 
 <style lang="stylus" scoped>
 
-.cmt
-    position: fixed;
-    top: 0;
-    left: 0;
+
 .post-title
-    width:120%
+
+    height:60px
     margin-left:-50px
     margin-right:-50px
-    padding 10px 5px 15px 20px;
+
     .header-img
+        margin-left -10px
         display inline-block
         vertical-align top
         cursor pointer
+        height:50px
+        width:50px
 
     .post-info
         display inline-block
         margin-left 10px
-        width 80%
-        height 50px
-        line-height 20px
+        width 70%
+        height 60px
+
         >span
+            text-align:left
+            height:25px
             display block
-            overflow hidden
+            line-height:20px
             white-space nowrap
             text-overflow ellipsis
         .author-name
@@ -364,15 +365,16 @@ export default {
             font-size 14px
             color #000
     .post-close
+        height:60px
         display inline-block
-        padding 10px
+        margin-left:60px
         vertical-align top
 
 
 
 .my-reply
     padding 10px
-    margin-left:-30px
+
     background-color #fafbfc
     .header-img
         display inline-block
@@ -380,10 +382,8 @@ export default {
     .reply-info
         display inline-block
         margin-left 5px
-        width:90%
-        @media screen and (max-width:1200px) {
-            width 100%
-        }
+        width:80%
+
         .reply-input
 
             min-height 20px
@@ -399,7 +399,7 @@ export default {
             &:focus
 
                 padding 8px 8px
-                border 2px
+
                 box-shadow none
                 outline none
     .reply-btn-box
