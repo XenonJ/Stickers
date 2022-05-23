@@ -443,6 +443,133 @@ def notice(request):
         data = {}
         data = json.loads((json.dumps(data)))
 
+    try:
+        #处理comment
+        comments=[]
+        num1=0
+        usr = models.Users.objects.get(token=token)
+        user_id = usr["user_id"]
+        Latest_CheckTime=usr["Latest_CheckTime"]   #用户最新活动时间
+        psts=models.Posts.objects.filter(user_id=user_id)
 
+        for pst in psts:
+            post_id=pst["post_id"]
+            picture_url = pst["picture_url"]
+            text_or_pic = pst["text_or_pic"]
+            text = pst["text"]
+            font_size = pst["font_size"]
+            font_color = pst["font_color"]
+            font_format = pst["font_format"]       #本人发的帖子
+            cmts = models.Comments.objects.filter(post_id=post_id)
+            for cmt in cmts:
+                usr_c = models.Users.objects.get(user_id=cmt["user_id"])# 评论者
+                comment_time=cmt["comment_time"]
+                comment = cmt["comment"]
+                if_anonymous = cmt["if_anonymous"]
+                user_name = usr_c["user_name"]
+                profile_url = usr_c["image_url"]
+                if comment_time.__ge__(Latest_CheckTime):
+                    num1=num1+1
+                    comments.append({
+                        "post_id":post_id,
+                        "picture_url":picture_url,
+                        "text_or_pic":text_or_pic,
+                        "text":text,
+                        "font_size":font_size,
+                        "font_color":font_color,
+                        "font_format": font_format,
+                        "comment_time":comment_time,
+                        "comment":comment,
+                        "if_anonymous":if_anonymous,
+                        "user_name":user_name,
+                        "image_url":profile_url,
+                    })
+        data["comments"]=comments
+
+
+        #处理like_comment
+        like_comment=[]
+        num2=0
+        user_cmts= models.Comments.objects.filter(user_id=user_id)
+        for user_cmt in user_cmts:
+            usrcomment_id=user_cmt["comment_id"]       #用户自己的评论
+            cmtpost_id=user_cmt["post_id"]          #用户的评论所属的帖子id
+            pst2 = models.Posts.objects.filter(post_id=cmtpost_id)
+            picture_url2 = pst2["picture_url"]
+            text_or_pic2 = pst2["text_or_pic"]
+            text2 = pst2["text"]
+            font_size2 = pst2["font_size"]
+            font_color2 = pst2["font_color"]
+            font_format2 = pst2["font_format"]
+            like_comments=models.LikedComments.objects.filter(comment_id=usrcomment_id)
+            for like_comment1 in like_comments:
+                likeuser_id=like_comment1["user_id"]
+                time=like_comment1["like_time"]
+                likeusr=models.Users.objects.filter(user_id=likeuser_id)
+                likeuser_name=likeusr["user_name"]
+                likeuser_image_url=likeusr["image_url"]
+                if time.__ge__(Latest_CheckTime):
+                    num2=num2+1
+                    like_comment.append({
+                        "user_name":likeuser_name,
+                        "image_url":likeuser_image_url,
+                        "time":time,
+                        "comment_id":usrcomment_id,
+                        "picture_url": picture_url2,
+                        "text_or_pic": text_or_pic2,
+                        "text": text2,
+                        "font_size": font_size2,
+                        "font_color": font_color2,
+                        "font_format": font_format2,
+                    })
+        data["like_comment"]=like_comment
+
+        #处理like_post
+        like_post=[]
+        num3=0
+        psts3=models.Posts.objects.filter(user_id=user_id)
+
+        for pst3 in psts3:
+            post_id3 = pst3["post_id"]
+            pstlike_num=like_num = models.LikedPosts.objects.filter(post_id=post_id3).count()
+            if pstlike_num >0:
+                picture_url3 = pst3["picture_url"]
+                text_or_pic3 = pst3["text_or_pic"]
+                text3 = pst3["text"]
+                font_size3 = pst3["font_size"]
+                font_color3 = pst3["font_color"]
+                font_format3 = pst3["font_format"]
+                likedposts=models.LikedPosts.objects.filter(post_id=post_id3)
+                for likedpost in likedposts:
+                    time3=likedpost["like_time"]    #点赞时间
+                    likepost_user_id=likedpost["user_id"]
+                    usr3=models.Users.objects.filter(user_id=likepost_user_id)
+                    user_name3=usr3["user_name"]
+                    image_url3=usr3["image_url"]
+                    if  time3.__ge__(Latest_CheckTime):
+                        num3=num3+1
+                        like_post.append({
+                            "user_name":user_name3,
+                            "image_url":image_url3,
+                            "time":time3,
+                            "post_id":post_id3,
+                            "picture_url":picture_url3,
+                            "text_or_pic": text_or_pic3,
+                            "text": text3,
+                            "font_size": font_size3,
+                            "font_color": font_color3,
+                            "font_format": font_format3,
+                        })
+        data["like_post"]=like_post
+        sum=num1+num2+num3
+        data["sum"]=sum
+
+        res["data"] = data
+        res["status"] = 200
+        res["error"] = ""
+
+    except Exception as e:
+        res["status"] = 404
+        res["error"] = e
 
     return HttpResponse(json.dumps(res), content_type='application/json')

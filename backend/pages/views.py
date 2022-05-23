@@ -29,6 +29,11 @@ def main_page(request):
                     "rotation_angle": post["rotation_angle"],
                     "picture_url": post["picture_url"],
                     "background_url": post["background_url"],
+                    "text_or_pic":post[ "text_or_pic"],
+                    "text":post[ "text"],
+                    "font_size":post[ "font_size"],
+                    "font_color":post["font_color"],
+                    "font_format":post["font_format"],
                 })
             data["posts"] = ls
 
@@ -71,6 +76,7 @@ def myself(request):
                 "user_name": user_name,
                 "profile_url": profile_url,
                 "show_yourself": show_yourself,
+
             }
 
             # 处理posts
@@ -82,6 +88,11 @@ def myself(request):
                     "post_id": psts[i]["post_id"],
                     "picture_url": psts[i]["picture_url"],
                     "post_time": psts[i]["post_time"],
+                    "text_or_pic": psts[i]["text_or_pic"],
+                    "text": psts[i]["text"],
+                    "font_size": psts[i]["font_size"],
+                    "font_color": psts[i]["font_color"],
+                    "font_format": psts[i]["font_format"],
                 })
             data["posts"] = posts
 
@@ -125,6 +136,11 @@ def user_detail(request):
                     "post_id": psts[i]["post_id"],
                     "picture_url": psts[i]["picture_url"],
                     "post_time": psts[i]["post_time"],
+                    "text_or_pic": psts[i]["text_or_pic"],
+                    "text": psts[i]["text"],
+                    "font_size": psts[i]["font_size"],
+                    "font_color": psts[i]["font_color"],
+                    "font_format": psts[i]["font_format"],
                 })
             data["posts"] = posts
 
@@ -165,6 +181,11 @@ def post_detail(request):
             user_id = usr_p["user_id"]
             user_name = usr_p["user_name"]
             profile_url = usr_p["image_url"]
+            text_or_pic = pst["text_or_pic"]
+            text = pst["text"]
+            font_size = pst["font_size"]
+            font_color = pst["font_color"]
+            font_format = pst["font_format"]
 
             data["post"] = {
                 "if_self": if_self,
@@ -177,6 +198,11 @@ def post_detail(request):
                 "user_id": user_id,
                 "user_name": user_name,
                 "profile_url": profile_url,
+                "text_or_pic":text_or_pic,
+                "text":text,
+                "font_size":font_size,
+                "font_color":font_color,
+                "font_format":font_format,
             }
 
             # 处理comments
