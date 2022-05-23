@@ -82,7 +82,7 @@ DATABASES = {
         'PORT': '3306',
         'NAME': 'StickersDB',
         'USER': 'root',
-        'PASSWORD': 'sxmhave2dreams',
+        'PASSWORD': 'lunyaqi',
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
         }

@@ -1,5 +1,5 @@
 <template>
-  <q-page padding class="flex flex-center">
+  <q-page padding class="fixed fixed-center">
     <div>
       <el-container>
         <el-header>
@@ -335,7 +335,8 @@ export default {
     height:60px
     margin-left:-50px
     margin-right:-50px
-
+    margin-top:30px
+    
     .header-img
         margin-left -10px
         display inline-block

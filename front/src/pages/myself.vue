@@ -9,23 +9,7 @@
         </el-button-group>
 
         <el-container>
-<<<<<<< Updated upstream
-        <el-row class="demo-avatar demo-basic">
-        <el-col :span="12">
-        <div class="demo-basic--circle">
-        <div class="block"><el-avatar :size="60" :src="circleUrl"></el-avatar></div>
-        <div class="block" v-for="size in sizeList" :key="size">
-          <el-avatar :size="size" :src="circleUrl"></el-avatar>
-        </div>
-        </div>
-        </el-col>
-        <el-col :span="12">
-        <div>zzh&nbsp;<el-link icon="el-icon-edit">编辑</el-link> </div>
-        <div>0000000000</div>
-        </el-col>
-        </el-row>
-=======
-          
+
           <div class="post-title">
             <el-avatar
               shape="circle"
@@ -38,7 +22,7 @@
               <span class="author-name">{{ post.authorName }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<el-link icon="el-icon-edit">编辑</el-link></span>
               <span class="author-time">{{ post.id }}</span>
             </div>
-            
+
 
             <div class="post-close">
               <el-button
@@ -49,8 +33,7 @@
               ></el-button>
             </div>
           </div>
-        
->>>>>>> Stashed changes
+
         </el-container>
 
 
@@ -84,20 +67,8 @@
         </el-timeline>
         </el-container>
 
-<<<<<<< Updated upstream
       <el-footer>
-
-          <div>
-            <el-button type="danger" plain @click="open2">退出</el-button>
-          </div>
-        </el-footer>
-
-
-
-=======
-      <el-footer>  
      </el-footer>
->>>>>>> Stashed changes
       </el-container>
     </div>
   </q-page>
