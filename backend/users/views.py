@@ -102,8 +102,13 @@ def upload_post(request):
         x_coordinate = request.POST.get('x_coordinate')
         y_coordinate = request.POST.get('y_coordinate')
         rotation_angle = request.POST.get('rotation_angle')
+        text_or_pic = request.POST.get('text_or_pic')   #判断是图片or文字形式
         picture = request.FILES.get('picture')
-        background_selection = request.POST.get('background_selection')
+        background_url = request.POST.get('background_url')
+        text = request.POST.get('text')
+        font_size = request.POST.get('font_size')
+        font_color = request.POST.get('font_color')
+        font_format = request.POST.get('font_format')
         if_anonymous = request.POST.get('if_anonymous')
 
         # 获取token值对应的user_id
@@ -119,7 +124,7 @@ def upload_post(request):
                 fw.write(ck)
             picture_url = os.path.join('http://127.0.0.1:8000/', 'images/' + picture.name)
 
-        background_url = ""
+        background_url = ""  #暂时不知道如何处理
 
         try:
             post = models.Posts(
@@ -128,6 +133,11 @@ def upload_post(request):
                 rotation_angle=rotation_angle,
                 picture_url=picture_url,
                 background_url=background_url,
+                text_or_pic=text_or_pic,
+                text=text,
+                font_size=font_size,
+                font_color=font_color,
+                font_format=font_format,
                 if_anonymous=if_anonymous,
                 user_id=user_id
             )
@@ -428,5 +438,11 @@ def delete_post(request):
 def notice(request):
     res = {}
     res = json.loads(json.dumps(res))
+    if request.method == "GET":
+        token = request.GET.get('token')
+        data = {}
+        data = json.loads((json.dumps(data)))
+
+
 
     return HttpResponse(json.dumps(res), content_type='application/json')
