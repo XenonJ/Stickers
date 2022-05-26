@@ -1,6 +1,6 @@
 <template>
-  <q-page padding class="fixed fixed-center">
-    <div>
+  <q-page class="absolute-center">
+    <div class="cmt">
       <el-container>
         <el-header>
           <div class="post-title">
@@ -329,16 +329,19 @@ export default {
 
 <style lang="stylus" scoped>
 
+.cmt
+    background-color #F2F6FC
+
+    border-shadow:2px
+
+
 
 .post-title
 
     height:60px
-    margin-left:-50px
-    margin-right:-50px
-    margin-top:30px
-    
+
     .header-img
-        margin-left -10px
+
         display inline-block
         vertical-align top
         cursor pointer
@@ -347,8 +350,7 @@ export default {
 
     .post-info
         display inline-block
-        margin-left 10px
-        width 70%
+        width 80%
         height 60px
 
         >span
@@ -367,8 +369,9 @@ export default {
             color #000
     .post-close
         height:60px
+        margin-top:10px
         display inline-block
-        margin-left:60px
+
         vertical-align top
 
 
@@ -376,14 +379,14 @@ export default {
 .my-reply
     padding 10px
 
-    background-color #fafbfc
+
     .header-img
         display inline-block
         vertical-align top
     .reply-info
         display inline-block
         margin-left 5px
-        width:80%
+        width:90%
 
         .reply-input
 
@@ -391,7 +394,7 @@ export default {
             line-height 22px
             padding 10px
             color black
-            background-color #fff
+            background-color 	#FFF
             border-radius 5px
             &:empty:before
                 content attr(placeholder)
@@ -429,12 +432,11 @@ export default {
     .author-info
         display inline-block
         margin-left 5px
-        width 60%
+        width 70%
         height 40px
         line-height 20px
         >span
             display block
-
             overflow hidden
             white-space nowrap
             text-overflow ellipsis
@@ -445,7 +447,7 @@ export default {
         .author-time
             font-size 14px
     .icon-btn
-        width 30%
+        width 20%
         padding 0 !important
         float right
         @media screen and (max-width : 1200px){
