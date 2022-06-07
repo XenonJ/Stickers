@@ -8,6 +8,10 @@
     />
     <ArticleComment v-show="showPost">
     </ArticleComment>
+    <myself v-show="showMyself">
+    </myself>
+    <others v-show="showOthers">
+    </others>
     <img
       v-for="post in posts"
       :key="post.post_id"
@@ -19,11 +23,15 @@
 </template>
 
 <script type="text/javascript">
-import ArticleComment from 'src/pages/comment.vue'
+import ArticleComment from 'src/pages/comment.vue';
+import myself from 'src/pages/myself.vue';
+import others from 'src/pages/others.vue';
 export default {
   name: 'PageIndex',
   components:{
     ArticleComment,
+    myself,
+    others,
   },
   data() {
     return {
@@ -31,6 +39,8 @@ export default {
       canvasHeight: 1080,
       ctx: {},
       showPost: false,
+      showMyself: false,
+      showOthers: false,
       numPost: 2,
       posts: [
         {

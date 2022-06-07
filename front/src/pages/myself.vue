@@ -76,6 +76,7 @@
 
 <script>
 export default {
+  name: "myself",
   data() {
     return {
       post: {

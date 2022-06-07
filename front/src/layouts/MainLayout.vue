@@ -63,6 +63,9 @@
           </q-avatar>
           页脚
         </q-toolbar-title>
+        <q-btn round align="center" color="primary" @click="uploadPost">
+          <i class="el-icon-plus"></i>
+        </q-btn>
       </q-toolbar>
     </q-footer>
 
@@ -75,6 +78,11 @@ export default {
     return {
       tab: 'mails'
     }
+  },
+  methods:{
+    uploadPost(){
+      this.$router.push("./upload_picture");
+    },
   }
 }
 </script>

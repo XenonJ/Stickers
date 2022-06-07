@@ -9,7 +9,7 @@
         </el-button-group>
 
         <el-container>
-          
+
           <div class="post-title">
             <el-avatar
               shape="circle"
@@ -22,7 +22,7 @@
               <span class="author-name">{{ post.authorName }}</span>
               <span class="author-time">{{ post.id }}</span>
             </div>
-            
+
 
             <div class="post-close">
               <el-button
@@ -33,9 +33,9 @@
               ></el-button>
             </div>
           </div>
-        
+
         </el-container>
-        
+
 
         <el-container>
         <el-input
@@ -67,7 +67,7 @@
         </el-timeline>
         </el-container>
 
-      <el-footer>  
+      <el-footer>
      </el-footer>
       </el-container>
     </div>
@@ -76,6 +76,7 @@
 
 <script>
 export default {
+  name: "others",
   data() {
     return {
       post: {
