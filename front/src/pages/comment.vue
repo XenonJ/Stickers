@@ -270,8 +270,7 @@ export default {
       }
     },
 
-    deleteComment() {
-      if (this.comments.if_self) {
+    deleteComment() { if (this.comments.if_self) {
         Axios.post("http://127.0.0.1:8000/users/delete_comment", {
           params: {
             comment_id: this.comments.comment_id,
@@ -289,8 +288,7 @@ export default {
           type: "warning",
           message: "删除失败",
         });
-      }
-    },
+      }},
     inputFocus() {
       var replyInput = document.getElementById("replyInput");
       replyInput.style.padding = "8px 8px";

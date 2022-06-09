@@ -18,7 +18,7 @@
 
         <div class="q-pa-md q-gutter-sm">
           <q-editor
-            v-model="textarea"
+            v-model="text"
             :dense="$q.screen.lt.md"
             :toolbar="[
               [
@@ -73,18 +73,13 @@
 
         <el-container style="height: 200px">
           <el-aside width="200px">
-            <el-select
-
-              v-model="value1"
-              placeholder="请选择背景"
-              size="medium"
-            >
+            <el-select v-model="label" placeholder="请选择背景" size="medium">
               <el-option
                 v-for="item in options"
-                :key="item.value"
+                :key="item.label"
                 :label="item.label"
-                :value="item.value1"
-                ><img :src="item.label" />
+                :value="item.background_url"
+                ><img :src="item.background_url" />
               </el-option>
             </el-select>
           </el-aside>
@@ -107,21 +102,32 @@
         </el-container>
         <el-footer>
           <div style="float: left">
-            <el-switch v-model="value3" active-text="匿名"> </el-switch>
+            <el-switch v-model="if_anonymous" active-text="匿名"> </el-switch>
           </div>
           <div>
             <el-input
               style="width: 130px"
               placeholder="请输入x坐标"
-              v-model="input1"
-              clearable
+              v-model="x_coordinate"
+              type="number"
+              :min="0"
             >
             </el-input>
             <el-input
               style="width: 130px"
               placeholder="请输入y坐标"
-              v-model="input2"
-              clearable
+              v-model="y_coordinate"
+              type="number"
+              :min="0"
+            >
+            </el-input>
+            <el-input
+              style="width: 150px"
+              placeholder="请输入旋转角度"
+              v-model="rotation_angle"
+              type="number"
+              :min="0"
+              :max="360"
             >
             </el-input>
           </div>
@@ -137,22 +143,31 @@
 </template>
 
 <script>
+import Axios from "axios";
+import { axiosInstance } from "../boot/axios.js";
 export default {
+  props: {
+    token: String,
+  },
   data() {
     return {
-      value2: [0, 360],
-      value3: 1,
-      textarea: "",
-      input1: "",
-      input2: "",
+      rotation_angle: "",
+      if_anonymous: false,
+      x_coordinate: "",
+      y_coordinate: "",
+      text_or_pic: true,
+      text: "",
+      url: "",
+      label:"",
+      background_url:"",
       options: [
         {
-          label: "/static/img/rel/right.png",
-          value1: "0",
+          label: "0",
+          background_url: "/static/img/rel/right.png",
         },
         {
-          label: "/static/img/rel/left.png",
-          value1: "1",
+          label: "1",
+          background_url: "/static/img/rel/left.png",
         },
       ],
     };
@@ -171,6 +186,18 @@ export default {
         type: "primary",
       })
         .then(() => {
+          Axios.post("http://127.0.0.1:8000/users/upload_post/", {
+            params: {
+              token: this.token,
+              x_coordinate: this.x_coordinate,
+              y_coordinate: this.y_coordinate,
+              rotation_angle: this.rotation_angle,
+              text_or_pic: this.text_or_pic,
+              text: this.text,
+              background_url: this.background_url,
+              if_anonymous: this.if_anonymous,
+            },
+          });
           this.$message({
             type: "success",
             message: "上传成功!",
@@ -253,9 +280,6 @@ export default {
 }
 .el-select {
   margin-left: 15px;
-  margin-right: 10px
+  margin-right: 10px;
 }
-
-
-
 </style>
