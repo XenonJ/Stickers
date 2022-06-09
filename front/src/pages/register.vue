@@ -233,11 +233,11 @@ export default {
       Axios
         .post("http://127.0.0.1:8000/users/register/", this.formdata)
         .then(response=>{
-          if(response.data[0].status == 200){
+          if(response.status == 200){
             this.$router.push('/login'), 2000
           }
           else{
-            this.$q.notify(response.data[0].error);
+            this.$q.notify(response.error);
           }
         })
         .catch(function(error){

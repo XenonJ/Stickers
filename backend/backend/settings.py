@@ -109,7 +109,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME':'StickersDB',
         'USER':'root',
-        'PASSWORD': 'sxmhave2dreams',  # 密码
+        'PASSWORD': 'zzh010309',  # 密码
         'HOST': 'localhost',
         'PORT': '3306',
 

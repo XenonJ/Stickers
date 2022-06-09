@@ -81,7 +81,7 @@ export default {
   },
   methods:{
     uploadPost(){
-      this.$router.push("./upload_picture");
+      this.$router.push("./upload_picture?token="+this.$route.query.token);
     },
   }
 }

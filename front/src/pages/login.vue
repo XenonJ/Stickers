@@ -212,11 +212,12 @@ export default {
       Axios
         .post("http://127.0.0.1:8000/users/login/", data)
         .then(response => {
-          if(response.data[0].status == 200){
-            this.$router.push("/page1?username="+this.username);
+          console.log(response.data);
+          if(response.status == 200){
+            this.$router.push("/?token="+response.data.data.token);
           }
           else{
-            this.$q.notify(response.data[0].error);
+            this.$q.notify(response.error);
           }
           // const authorities = data.authorities || [];
           // if (authorities.findIndex(t => t.authority === "ROLE_SUPER_ADMIN") >= 0) {

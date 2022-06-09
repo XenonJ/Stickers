@@ -8,9 +8,10 @@
     />
     <ArticleComment
       :token="this.token"
-      :post_id="this.presentPostID"
+      :post_id="Number(this.presentPostID)"
       :profile_url="this.user.profile_url"
       :user_name="this.user.user_name"
+      :picture_url="this.posts[0].picture_url"
       v-show="showPost"
       ref="ArticleComment">
     </ArticleComment>
@@ -70,15 +71,15 @@ export default {
       presentPostID: 0,
       posts: [
         {
-          post_id: 111,
-          x_coordinates: 100,
-          y_coordinates: 200,
-          rotation_angle: 30,
-          picture_url: "http://127.0.0.1:8000/images/a.jpg",
+          post_id: 0,
+          x_coordinates: 12,
+          y_coordinates: 12,
+          rotation_angle: 12,
+          picture_url: "http://127.0.0.1:8000/images/1654799732.8270373IMG_1877.JPG",
           background_url: "",
         },
         {
-          post_id: 222,
+          post_id: 0,
           x_coordinates: 1200,
           y_coordinates: 600,
           rotation_angle: -30,
@@ -92,88 +93,121 @@ export default {
       },
     }
   },
-  mounted(){
-    fabric.Object.prototype
+  created(){
+    console.log("created");
     var _this = this;
-    var canvas = new fabric.Canvas('canvas');
-    canvas.on('mouse:wheel', function(opt) {
-      var delta = opt.e.deltaY;
-      var zoom = canvas.getZoom();
-      zoom *= 0.999 ** delta;
-      if (zoom > 20) zoom = 20;
-      if (zoom < 0.01) zoom = 0.01;
-      canvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
-      opt.e.preventDefault();
-      opt.e.stopPropagation();
-    });
-    canvas.on('mouse:down', function(opt) {
-      // if (opt.target) {
-      //   console.log(opt.target);
-      // }
-      // else{
-        var evt = opt.e;
-        this.isDragging = true;
-        this.selection = false;
-        this.lastPosX = evt.clientX;
-        this.lastPosY = evt.clientY;
-      // }
-    });
-    canvas.on('mouse:move', function(opt) {
-      if (this.isDragging) {
-        var e = opt.e;
-        var vpt = this.viewportTransform;
-        vpt[4] += e.clientX - this.lastPosX;
-        vpt[5] += e.clientY - this.lastPosY;
-        this.requestRenderAll();
-        this.lastPosX = e.clientX;
-        this.lastPosY = e.clientY;
-      }
-    });
-    canvas.on('mouse:up', function(opt) {
-      // on mouse up we want to recalculate new interaction
-      // for all objects, so we call setViewportTransform
-      this.setViewportTransform(this.viewportTransform);
-      this.isDragging = false;
-      this.selection = true;
-    });
-    // _this.getPosts();
-    _this.draw(canvas);
+    _this.token = _this.$route.query.token
+    console.log(_this.token)
+    _this.getPosts();
+  },
+  mounted(){
+    // console.log("mounted");
+    // var _this = this;
+    // _this.Refresh();
   },
   methods: {
+    Refresh: function(){
+      console.log("refresh");
+      fabric.Object.prototype
+      var _this = this;
+      console.log(_this.posts);
+      var canvas = new fabric.Canvas('canvas');
+      canvas.on('mouse:wheel', function(opt) {
+        var delta = opt.e.deltaY;
+        var zoom = canvas.getZoom();
+        zoom *= 0.999 ** delta;
+        if (zoom > 20) zoom = 20;
+        if (zoom < 0.01) zoom = 0.01;
+        canvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
+        opt.e.preventDefault();
+        opt.e.stopPropagation();
+      });
+      canvas.on('mouse:down', function(opt) {
+        // if (opt.target) {
+        //   console.log(opt.target);
+        // }
+        // else{
+          var evt = opt.e;
+          this.isDragging = true;
+          this.selection = false;
+          this.lastPosX = evt.clientX;
+          this.lastPosY = evt.clientY;
+        // }
+      });
+      canvas.on('mouse:move', function(opt) {
+        if (this.isDragging) {
+          var e = opt.e;
+          var vpt = this.viewportTransform;
+          vpt[4] += e.clientX - this.lastPosX;
+          vpt[5] += e.clientY - this.lastPosY;
+          this.requestRenderAll();
+          this.lastPosX = e.clientX;
+          this.lastPosY = e.clientY;
+        }
+      });
+      canvas.on('mouse:up', function(opt) {
+        // on mouse up we want to recalculate new interaction
+        // for all objects, so we call setViewportTransform
+        this.setViewportTransform(this.viewportTransform);
+        this.isDragging = false;
+        this.selection = true;
+      });
+      _this.draw(canvas);
+    },
     draw(canvas) {
-      var post;
       var _this = this;
       for(var i = 0; i < _this.numPost; i++){
-        post = _this.posts[i];
-        var img = document.getElementById(post.post_id);
-        var imageInstance = new fabric.Image(img, {
-          left: post.x_coordinates,
-          top: post.y_coordinates,
-          angle: post.rotation_angle,
-          hoverCursor: "pointer",
-          selectable: false,
+        var post = _this.posts[i];
+        fabric.Image.fromURL(post.picture_url, (img)=>{
+            img.set({
+              left: Number(JSON.stringify(post.x_coordinates)),
+              top: Number(JSON.stringify(post.y_coordinates)),
+              angle: Number(JSON.stringify(post.rotation_angle)),
+              hoverCursor: "pointer",
+              selectable: false,
+            });
+            img.on("mousedown", function(opt){
+              if(!_this.showPost){
+                _this.presentPostID = Number(JSON.stringify(post.post_id));
+                _this.$refs.ArticleComment.Refresh();
+              }
+              _this.showPost = !_this.showPost;
+            })
+            canvas.add(img);
         });
-        const num = new String(post.post_id);
-        imageInstance.on("mousedown", function(opt){
-          if(!_this.showPost){
-            _this.presentPostID = Number(num);
-            _this.$refs.ArticleComment.Refresh();
-          }
-          _this.showPost = !_this.showPost;
-        })
-        canvas.add(imageInstance);
+        // var img = document.getElementById(post.post_id);
+        // var imageInstance = new fabric.Image(img, {
+        //   left: post.x_coordinates,
+        //   top: post.y_coordinates,
+        //   angle: post.rotation_angle,
+        //   hoverCursor: "pointer",
+        //   selectable: false,
+        // });
+        // const num = new String(post.post_id);
+        // imageInstance.on("mousedown", function(opt){
+        //   if(!_this.showPost){
+        //     _this.presentPostID = Number(num);
+        //     _this.$refs.ArticleComment.Refresh();
+        //   }
+        //   _this.showPost = !_this.showPost;
+        // })
+        // canvas.add(imageInstance);
       }
     },
-    getPosts(){
-      Axios
+    async getPosts(){
+      console.log("get post");
+      await Axios
         .get("http://127.0.0.1:8000/pages/main_page/", {
             params:{
                 token: this.token,
             }
         })
         .then(response => {
-            this.posts = response.data.posts;
-            this.user = response.data.user;
+            var _this = this;
+            _this.posts = response.data.data.posts;
+            _this.user = response.data.data.user;
+            console.log(_this.posts);
+            _this.Refresh();
         })
         .catch(function(error){
             console.log(error);

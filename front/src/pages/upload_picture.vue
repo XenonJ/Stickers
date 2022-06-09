@@ -27,7 +27,7 @@
             border: 1px;
           "
         >
-          <el-upload
+          <!-- <el-upload
             :action="api + 'upload'"
             list-type="picture-card"
             :auto-upload="false"
@@ -59,7 +59,19 @@
                 </span>
               </span>
             </div>
-          </el-upload>
+          </el-upload> -->
+          <el-upload
+              class="avatar-uploader"
+              action="aaa"
+              ::limit="1"
+              :show-file-list="false"
+
+              :on-change="handlePictureCardPreview"
+              :before-upload="beforeupload"
+              accept="image/png,image/gif,image/jpg,image/jpeg">
+              <img v-if="imageUrl" :src="imageUrl" class="avatar">
+              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            </el-upload>
           <el-dialog :visible.sync="dialogVisible">
             <img width="100%" :src="dialogImageUrl" alt="" />
           </el-dialog>
@@ -152,6 +164,8 @@ export default {
       dialogVisible: false,
       fileList: [],
       text_or_pic: false,
+      formdata: new FormData(),
+      imageUrl: "",
       options: [
         {
           label: "0",
@@ -164,6 +178,9 @@ export default {
       ],
       background_url: "",
     };
+  },
+  mounted(){
+    this.token = this.$route.query.token;
   },
   methods: {
     addRoute1() {
@@ -188,17 +205,25 @@ export default {
         type: "primary",
       })
         .then(() => {
-          Axios.post("http://127.0.0.1:8000/users/upload_post/", {
-            params: {
-              token: this.token,
-              x_coordinate: this.x_coordinate,
-              y_coordinate: this.y_coordinate,
-              rotation_angle: this.rotation_angle,
-              text_or_pic: false,
-              picture: this.fileList,
-              background_url: this.background_url,
-              if_anonymous: this.if_anonymous,
-            },
+          this.formdata.append('token', this.token);
+          this.formdata.append('x_coordinate', this.x_coordinate);
+          this.formdata.append('y_coordinate', this.y_coordinate);
+          this.formdata.append('rotation_angle', this.rotation_angle);
+          this.formdata.append('text_or_pic', false);
+          this.formdata.append('background_url', this.background_url);
+          this.formdata.append('if_anonymous', this.if_anonymous);
+          Axios
+          .post("http://127.0.0.1:8000/users/upload_post/", this.formdata)
+          .then(response=>{
+            if(response.status == 200){
+              this.$router.push('/?token='+this.token)
+            }
+            else{
+              this.$q.notify(response.error);
+            }
+          })
+          .catch(function(error){
+            console.log(error);
           });
           this.$message({
             type: "success",
@@ -223,6 +248,30 @@ export default {
       }).then(() => {
         this.$router.push("./");
       });
+    },
+    handlePictureCardPreview (event) {
+      var URL = null;
+      if (window.createObjectURL != undefined) {
+        // basic
+        URL = window.createObjectURL(event.raw);
+      } else if (window.URL != undefined) {
+        // mozilla(firefox)
+        URL = window.URL.createObjectURL(event.raw);
+      } else if (window.webkitURL != undefined) {
+        // webkit or chrome
+        URL = window.webkitURL.createObjectURL(event.raw);
+      }
+      this.imageUrl = URL;
+    },
+    beforeupload (file) {
+      if(this.formdata.has('picture')){
+        this.formdata.delete('picture');
+      }
+      this.formdata.append('picture', file)
+      return false
+    },
+    handleAvatarSuccess(res, file) {
+      this.imageUrl = URL.createObjectURL(file.raw);
     },
   },
 };
@@ -283,5 +332,28 @@ export default {
 .el-select {
   margin-left: 15px;
   margin-right: 10px;
+}
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409EFF;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
 }
 </style>

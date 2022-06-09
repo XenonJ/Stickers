@@ -6,7 +6,7 @@ class Users(models.Model):
     user_id = models.CharField(primary_key=True, max_length=100)
     token = models.CharField(max_length=500)
     user_name = models.CharField(max_length=20, blank=False)
-    code_hash = models.CharField(max_length=20, blank=False)
+    code_hash = models.CharField(max_length=100, blank=False)
     image_url = models.URLField()
     Real_name_authentication = models.BooleanField(default=False)
     Student_id = models.IntegerField(default=0)
@@ -15,7 +15,7 @@ class Users(models.Model):
     Latest_CheckTime=models.TimeField(auto_now=True)
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'users'
 
 
@@ -40,6 +40,7 @@ class Posts(models.Model):
     latest_ActTime = models.TimeField(auto_now=True)
 
     class Meta:
+        managed = False
         db_table='posts'
 
 
@@ -55,7 +56,7 @@ class Comments(models.Model):
     comment_time = models.TimeField(default=None)
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'comments'
 
 
@@ -65,7 +66,7 @@ class LikedPosts(models.Model):
     like_time = models.TimeField(auto_now_add=True)
 
     class Meta:
-        # managed = False
+        managed = False
         unique_together = ("post_id", "user_id")
 
 
@@ -75,6 +76,6 @@ class LikedComments(models.Model):
     like_time = models.TimeField(auto_now_add=True)
 
     class Meta:
-        # managed = False
+        managed = False
         unique_together = ("comment_id", "user_id")
 

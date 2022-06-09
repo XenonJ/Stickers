@@ -73,11 +73,11 @@ def login(request):
         password = request.POST.get('password')
 
         try:
-            usr = models.Users.objects.filter(user_id=user_id)
-            if md5(password) == usr[0]["code_hash"]:
+            usr = models.Users.objects.get(user_id=user_id)
+            if md5(password) == usr.code_hash:
                 data = {
-                    'token': usr[0]["token"],
-                    'user_permission': usr[0]["user_permissions"]
+                    'token': usr.token,
+                    'user_permission': usr.user_permissions
                 }
                 res['data'] = data
                 res['status'] = 200
@@ -113,7 +113,7 @@ def upload_post(request):
 
         # 获取token值对应的user_id
         usr = models.Users.objects.filter(token=token)
-        user_id = usr[0]["user_id"]
+        user_id = usr[0].user_id
 
         # 修改图片名称
         picture.name = str(time.time()) + picture.name
@@ -127,7 +127,16 @@ def upload_post(request):
         background_url = ""  #暂时不知道如何处理
 
         try:
+            if text_or_pic == "true":
+                text_or_pic = 1
+            else:
+                text_or_pic = 0
+            if if_anonymous == "true":
+                if_anonymous = 1
+            else:
+                if_anonymous = 0
             post = models.Posts(
+                post_id=models.Posts.objects.all().count(),
                 page_coordinates_x=x_coordinate,
                 page_coordinates_y=y_coordinate,
                 rotation_angle=rotation_angle,
@@ -139,7 +148,7 @@ def upload_post(request):
                 font_color=font_color,
                 font_format=font_format,
                 if_anonymous=if_anonymous,
-                user_id=user_id
+                user_id=models.Users.objects.filter(token=token)[0]
             )
             post.save()
 
@@ -164,7 +173,7 @@ def comment(request):
 
         # 获取token值对应的user_id
         usr = models.Users.objects.filter(token=token)
-        user_id = usr[0]["user_id"]
+        user_id = usr[0].user_id
 
         try:
             cmt = models.Comments(
@@ -197,7 +206,7 @@ def like_post(request):
 
         # 获取token值对应的user_id
         usr = models.Users.objects.filter(token=token)
-        user_id = usr[0]["user_id"]
+        user_id = usr[0].user_id
 
         try:
             models.LikedPosts.objects.create(
@@ -227,7 +236,7 @@ def like_comment(request):
 
         # 获取token值对应的user_id
         usr = models.Users.objects.filter(token=token)
-        user_id = usr[0]["user_id"]
+        user_id = usr[0].user_id
 
         try:
             models.LikedComments.objects.create(
@@ -237,7 +246,7 @@ def like_comment(request):
 
             # 获取评论对应的帖子id
             cmt = models.Comments.objects.get(comment_id=comment_id)
-            post_id = cmt["post_id"]
+            post_id = cmt.post_id
 
             # 保存该帖子的最后更改时间
             models.Posts.objects.get(post_id=post_id).save()
@@ -328,11 +337,11 @@ def delete_comment(request):
 
         # 获取token值对应的user_id
         usr = models.Users.objects.filter(token=token)
-        user_id = usr[0]["user_id"]
+        user_id = usr[0].user_id
 
         try:
             cmt = models.Comments.objects.filter(comment_id=comment_id)
-            if cmt[0]["user_id"] == user_id:
+            if cmt[0].user_id == user_id:
                 cmt.delete()
                 res['status'] = 200
                 res['error'] = ""
@@ -357,11 +366,11 @@ def rm_like_post(request):
 
         # 获取token值对应的user_id
         usr = models.Users.objects.filter(token=token)
-        user_id = usr[0]["user_id"]
+        user_id = usr[0].user_id
 
         try:
             cmt = models.LikedPosts.objects.filter(post_id=post_id)
-            if cmt[0]["user_id"] == user_id:
+            if cmt[0].user_id == user_id:
                 cmt.delete()
                 res['status'] = 200
                 res['error'] = ""
@@ -386,11 +395,11 @@ def rm_like_comment(request):
 
         # 获取token值对应的user_id
         usr = models.Users.objects.filter(token=token)
-        user_id = usr[0]["user_id"]
+        user_id = usr[0].user_id
 
         try:
             cmt = models.LikedComments.objects.filter(comment_id=comment_id)
-            if cmt[0]["user_id"] == user_id:
+            if cmt[0].user_id == user_id:
                 cmt.delete()
                 res['status'] = 200
                 res['error'] = ""
@@ -415,11 +424,11 @@ def delete_post(request):
 
         # 获取token值对应的user_id
         usr = models.Users.objects.filter(token=token)
-        user_id = usr[0]["user_id"]
+        user_id = usr[0].user_id
 
         try:
             cmt = models.Posts.objects.filter(post_id=post_id)
-            if cmt[0]["user_id"] == user_id:
+            if cmt[0].user_id == user_id:
                 cmt.delete()
                 res['status'] = 200
                 res['error'] = ""
@@ -453,21 +462,21 @@ def notice(request):
         psts=models.Posts.objects.filter(user_id=user_id)
 
         for pst in psts:
-            post_id=pst["post_id"]
-            picture_url = pst["picture_url"]
-            text_or_pic = pst["text_or_pic"]
-            text = pst["text"]
-            font_size = pst["font_size"]
-            font_color = pst["font_color"]
-            font_format = pst["font_format"]       #本人发的帖子
+            post_id=pst.post_id
+            picture_url = pst.picture_url
+            text_or_pic = pst.text_or_pic
+            text = pst.text
+            font_size = pst.font_size
+            font_color = pst.font_color
+            font_format = pst.font_format      #本人发的帖子
             cmts = models.Comments.objects.filter(post_id=post_id)
             for cmt in cmts:
-                usr_c = models.Users.objects.get(user_id=cmt["user_id"])# 评论者
-                comment_time=cmt["comment_time"]
-                comment = cmt["comment"]
-                if_anonymous = cmt["if_anonymous"]
-                user_name = usr_c["user_name"]
-                profile_url = usr_c["image_url"]
+                usr_c = models.Users.objects.get(user_id=cmt.user_id)# 评论者
+                comment_time=cmt.comment_time
+                comment = cmt.comment
+                if_anonymous = cmt.if_anonymous
+                user_name = usr_c.user_name
+                profile_url = usr_c.image_url
                 if comment_time.__ge__(Latest_CheckTime):
                     num1=num1+1
                     comments.append({
@@ -492,22 +501,22 @@ def notice(request):
         num2=0
         user_cmts= models.Comments.objects.filter(user_id=user_id)
         for user_cmt in user_cmts:
-            usrcomment_id=user_cmt["comment_id"]       #用户自己的评论
-            cmtpost_id=user_cmt["post_id"]          #用户的评论所属的帖子id
+            usrcomment_id=user_cmt.comment_id     #用户自己的评论
+            cmtpost_id=user_cmt.post_id          #用户的评论所属的帖子id
             pst2 = models.Posts.objects.filter(post_id=cmtpost_id)
-            picture_url2 = pst2["picture_url"]
-            text_or_pic2 = pst2["text_or_pic"]
-            text2 = pst2["text"]
-            font_size2 = pst2["font_size"]
-            font_color2 = pst2["font_color"]
-            font_format2 = pst2["font_format"]
+            picture_url2 = pst2.picture_url
+            text_or_pic2 = pst2.text_or_pic
+            text2 = pst2.text
+            font_size2 = pst2.font_size
+            font_color2 = pst2.font_color
+            font_format2 = pst2.font_format
             like_comments=models.LikedComments.objects.filter(comment_id=usrcomment_id)
             for like_comment1 in like_comments:
-                likeuser_id=like_comment1["user_id"]
-                time=like_comment1["like_time"]
+                likeuser_id=like_comment1.user_id
+                time=like_comment1.like_time
                 likeusr=models.Users.objects.filter(user_id=likeuser_id)
-                likeuser_name=likeusr["user_name"]
-                likeuser_image_url=likeusr["image_url"]
+                likeuser_name=likeusr.user_name
+                likeuser_image_url=likeusr.image_url
                 if time.__ge__(Latest_CheckTime):
                     num2=num2+1
                     like_comment.append({
@@ -530,22 +539,22 @@ def notice(request):
         psts3=models.Posts.objects.filter(user_id=user_id)
 
         for pst3 in psts3:
-            post_id3 = pst3["post_id"]
+            post_id3 = pst3.post_id
             pstlike_num=like_num = models.LikedPosts.objects.filter(post_id=post_id3).count()
             if pstlike_num >0:
-                picture_url3 = pst3["picture_url"]
-                text_or_pic3 = pst3["text_or_pic"]
-                text3 = pst3["text"]
-                font_size3 = pst3["font_size"]
-                font_color3 = pst3["font_color"]
-                font_format3 = pst3["font_format"]
+                picture_url3 = pst3.picture_url
+                text_or_pic3 = pst3.text_or_pic
+                text3 = pst3.text
+                font_size3 = pst3.font_size
+                font_color3 = pst3.font_color
+                font_format3 = pst3.font_format
                 likedposts=models.LikedPosts.objects.filter(post_id=post_id3)
                 for likedpost in likedposts:
-                    time3=likedpost["like_time"]    #点赞时间
-                    likepost_user_id=likedpost["user_id"]
+                    time3=likedpost.like_time    #点赞时间
+                    likepost_user_id=likedpost.user_id
                     usr3=models.Users.objects.filter(user_id=likepost_user_id)
-                    user_name3=usr3["user_name"]
-                    image_url3=usr3["image_url"]
+                    user_name3=usr3.user_name
+                    image_url3=usr3.image_url
                     if  time3.__ge__(Latest_CheckTime):
                         num3=num3+1
                         like_post.append({

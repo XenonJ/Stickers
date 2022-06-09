@@ -170,6 +170,7 @@ export default {
     post_id: Number,
     user_name: String,
     profile_url: String,
+    picture_url: String,
   },
 
   data() {
