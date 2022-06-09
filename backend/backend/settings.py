@@ -112,18 +112,13 @@ DATABASES = {
         'PASSWORD': 'sxmhave2dreams',  # 密码
         'HOST': 'localhost',
         'PORT': '3306',
-<<<<<<< Updated upstream
-        'NAME': 'StickersDB',
-        'USER': 'root',
-        'PASSWORD': 'lunyaqi',
-=======
+
         # 'NAME': 'StickersDB',
         # 'USER': 'root',
         # 'PASSWORD': 'stickers',
         # 'HOST':'47.114.97.203',
         # 'PORT':'3306',
 
->>>>>>> Stashed changes
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
         }
