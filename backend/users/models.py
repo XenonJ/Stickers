@@ -55,7 +55,7 @@ class Comments(models.Model):
     comment_time = models.TimeField(default=None)
 
     class Meta:
-        managed = False
+        # managed = False
         db_table = 'comments'
 
 
@@ -65,7 +65,7 @@ class LikedPosts(models.Model):
     like_time = models.TimeField(auto_now_add=True)
 
     class Meta:
-        managed = False
+        # managed = False
         unique_together = ("post_id", "user_id")
 
 
@@ -75,5 +75,6 @@ class LikedComments(models.Model):
     like_time = models.TimeField(auto_now_add=True)
 
     class Meta:
-        managed = False
+        # managed = False
         unique_together = ("comment_id", "user_id")
+
