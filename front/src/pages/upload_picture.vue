@@ -125,6 +125,7 @@
 <script scoped>
 export default {
   data() {
+    props:{}
     return {
       value2: [0, 360],
       value3: 1,

@@ -12,7 +12,7 @@
               @click.native="addRoute1"
             ></el-avatar>
             <div class="post-info">
-              <span class="author-name">{{ post.authorName }}</span>
+              <span class="author-name">{{ post.user_name }}</span>
               <span class="author-time">{{ post.postTime }}</span>
             </div>
 
@@ -31,7 +31,7 @@
           <div class="demo-image__placeholder">
             <el-image
               style="width: 550px"
-              :src="post.pictureUrl"
+              :src="post.picture_url"
               :preview-src-list="post.previewUrl"
             ></el-image>
           </div>
@@ -62,7 +62,7 @@
           <el-avatar
             class="header-img"
             :size="40"
-            :src="user.header"
+            :src="this.profile_url"
           ></el-avatar>
           <div class="reply-info">
             <div
@@ -98,21 +98,21 @@
       >
       <div style="box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)">
         <div
-          v-for="(item, i) in comments"
+          v-for="(item, i) in this.comments"
           :key="i"
           class="author-title reply-father"
         >
           <el-avatar
             class="header-img"
             :size="40"
-            :src="item.headImg"
+            :src="item.image_url"
           ></el-avatar>
           <div class="author-info">
-            <span class="author-name">{{ item.name }}</span>
-            <span class="author-time">{{ item.time }}</span>
+            <span class="author-name">{{ item.user_name }}</span>
+            <span class="author-time">{{ item.comment_time }}</span>
           </div>
           <div class="icon-btn">
-            <i class="el-icon-thumb" @click="dianZan2"></i>{{ item.likes }}
+            <i class="el-icon-thumb" @click="dianZan2"></i>{{ item.like_num }}
             <i class="el-icon-delete" @click="deleteComment"></i>
           </div>
           <div class="talk-box">
@@ -125,7 +125,7 @@
             <el-avatar
               class="header-img"
               :size="40"
-              :src="myHeader"
+              :src="this.profile_url"
             ></el-avatar>
           </div>
         </div>
@@ -135,6 +135,8 @@
 </template>
 
 <script>
+import Axios from "axios";
+import { axiosInstance } from "../boot/axios.js";
 const clickoutside = {
   // 初始化指令
   bind(el, binding, node) {
@@ -160,79 +162,135 @@ const clickoutside = {
     delete el.vueClickOutside;
   },
 };
+
 export default {
   name: "ArticleComment",
+  props: {
+    token: String,
+    post_id: Number,
+    user_name: String,
+    profile_url: String,
+  },
+
   data() {
     return {
-      user: {
-        userName: "abc",
-        header: "",
-        userId: 666,
-      },
+      user: [],
       value1: true,
       btnShow: false,
       index: "0",
-      replyComment: "",
-      myName: "Lana Del Rey",
-      myHeader:
-        "https://ae01.alicdn.com/kf/Hd60a3f7c06fd47ae85624badd32ce54dv.jpg",
-      myId: 19870621,
+      post_flg: true,
       to: "",
       toId: -1,
-      post: {
-        header: "",
-        authorName: "xxx",
-        postTime: "2022年4月18日",
-        likes: "28",
-        flg: true,
-        pictureUrl:
-          "https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg",
-        previewUrl: [
-          "https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg",
-        ],
-      },
-      comments: [
-        {
-          name: "Lana Del Rey",
-          id: 19870621,
-          headImg:
-            "https://ae01.alicdn.com/kf/Hd60a3f7c06fd47ae85624badd32ce54dv.jpg",
-          comment: "我发布一张新专辑Norman Fucking Rockwell,大家快来听啊",
-          time: "2019年9月16日 18:43",
-
-          likes: "15",
-          inputShow: false,
-          fig: true,
-        },
-      ],
+      post: [],
+      comments: [],
+      replyComment: "",
     };
   },
   directives: { clickoutside },
   methods: {
+    Refresh: function () {
+      this.Refresh();
+
+      Axios.get("http://127.0.0.1:8000/pages/post_detail/", {
+        params: {
+          post_id: this.post_id,
+          token: this.token,
+        },
+      })
+        .then((res) => {
+          console.log(res);
+          this.post = res.data["post"];
+          this.comments = res.data["comment"];
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
     dianZan() {
-      if (this.post.flg) {
-        this.post.likes++;
-        this.post.flg = false;
+      if (this.post_flg) {
+        Axios.post("http://127.0.0.1:8000/users/like_post", {
+          params: {
+            post_id: this.post_id,
+            token: this.token,
+          },
+        });
+        this.post_flg = false;
       } else {
-        this.post.likes--;
-        this.post.flg = true;
+        Axios.post("http://127.0.0.1:8000/users/rm_like_post", {
+          params: {
+            post_id: this.post_id,
+            token: this.token,
+          },
+        });
+        this.post_flg = true;
       }
     },
     dianZan2() {
-      if (this.comments.flg) {
-        this.comments.likes++;
-        this.comments.flg = false;
+      if (this.comments_flg) {
+        Axios.post("http://127.0.0.1:8000/users/like_comment", {
+          params: {
+            comment_id: this.comment_id,
+            token: this.token,
+          },
+        });
+        this.comments_flg = false;
       } else {
-        this.comments.likes--;
-        this.comments.flg = true;
+        Axios.post("http://127.0.0.1:8000/users/rm_like_comment", {
+          params: {
+            comment_id: this.comment_id,
+            token: this.token,
+          },
+        });
+        this.comments_flg = true;
       }
     },
     addRoute1() {
       this.$router.push("./Info");
     },
     addRoute2() {},
-    deletePost() {},
-    deleteComment() {},
+    deletePost() {
+      if (this.post.if_self) {
+        Axios.post("http://127.0.0.1:8000/users/delete_post", {
+          params: {
+            post_id: this.post.post_id,
+            token: this.token,
+          },
+        });
+        this.$message({
+          showClose: true,
+          type: "success",
+          message: "删除成功",
+        });
+      } else {
+        this.$message({
+          showClose: true,
+          type: "warning",
+          message: "删除失败",
+        });
+      }
+    },
+
+    deleteComment() {
+      if (this.comments.if_self) {
+        Axios.post("http://127.0.0.1:8000/users/delete_comment", {
+          params: {
+            comment_id: this.comments.comment_id,
+            token: this.token,
+          },
+        });
+        this.$message({
+          showClose: true,
+          type: "success",
+          message: "删除成功",
+        });
+      } else {
+        this.$message({
+          showClose: true,
+          type: "warning",
+          message: "删除失败",
+        });
+      }
+    },
     inputFocus() {
       var replyInput = document.getElementById("replyInput");
       replyInput.style.padding = "8px 8px";
@@ -265,24 +323,19 @@ export default {
           message: "评论不能为空",
         });
       } else {
+        Axios.get("http://127.0.0.1:8000/users/comment", {
+          params: {
+            post_id: this.post.post_id,
+            token: this.token,
+            content: this.replyComment,
+            if_anonymous: this.value1,
+          },
+        });
         this.$message({
           showClose: true,
           type: "success",
           message: "评论成功",
         });
-        let a = {};
-        let input = document.getElementById("replyInput");
-        let timeNow = new Date().getTime();
-        let time = this.dateStr(timeNow);
-        a.name = this.myName;
-        a.comment = this.replyComment;
-        a.headImg = this.myHeader;
-        a.time = time;
-        a.commentNum = 0;
-        a.like = 0;
-        this.comments.push(a);
-        this.replyComment = "";
-        input.innerHTML = "";
       }
     },
 
@@ -328,144 +381,190 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+.cmt {
+  background-color: #F2F6FC;
+  border-shadow: 2px;
+}
 
-.cmt
-    background-color #F2F6FC
+.post-title {
+  height: 60px;
 
-    border-shadow:2px
+  .header-img {
+    display: inline-block;
+    vertical-align: top;
+    cursor: pointer;
+    height: 50px;
+    width: 50px;
+  }
 
+  .post-info {
+    display: inline-block;
+    width: 80%;
+    height: 60px;
 
+    >span {
+      text-align: left;
+      height: 25px;
+      display: block;
+      line-height: 20px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
 
-.post-title
+    .author-name {
+      color: #000;
+      font-size: 18px;
+      font-weight: bold;
+    }
 
-    height:60px
+    .author-time {
+      font-size: 14px;
+      color: #000;
+    }
+  }
 
-    .header-img
+  .post-close {
+    height: 60px;
+    margin-top: 10px;
+    display: inline-block;
+    vertical-align: top;
+  }
+}
 
-        display inline-block
-        vertical-align top
-        cursor pointer
-        height:50px
-        width:50px
+.my-reply {
+  padding: 10px;
 
-    .post-info
-        display inline-block
-        width 80%
-        height 60px
+  .header-img {
+    display: inline-block;
+    vertical-align: top;
+  }
 
-        >span
-            text-align:left
-            height:25px
-            display block
-            line-height:20px
-            white-space nowrap
-            text-overflow ellipsis
-        .author-name
-            color #000
-            font-size 18px
-            font-weight bold
-        .author-time
-            font-size 14px
-            color #000
-    .post-close
-        height:60px
-        margin-top:10px
-        display inline-block
+  .reply-info {
+    display: inline-block;
+    margin-left: 5px;
+    width: 90%;
 
-        vertical-align top
+    .reply-input {
+      min-height: 20px;
+      line-height: 22px;
+      padding: 10px;
+      color: black;
+      background-color: #FFF;
+      border-radius: 5px;
 
+      &:empty:before {
+        content: attr(placeholder);
+      }
 
+      &:focus:before {
+        content: none;
+      }
 
-.my-reply
-    padding 10px
+      &:focus {
+        padding: 8px 8px;
+        box-shadow: none;
+        outline: none;
+      }
+    }
+  }
 
+  .reply-btn-box {
+    height: 25px;
+    margin: 10px 10px 10px 10px;
 
-    .header-img
-        display inline-block
-        vertical-align top
-    .reply-info
-        display inline-block
-        margin-left 5px
-        width:90%
+    .reply-btn {
+      position: relative;
+      float: right;
+    }
 
-        .reply-input
+    .anonymous-btn {
+      position: relative;
+      float: left;
+      margin-top: 5px;
+    }
+  }
+}
 
-            min-height 20px
-            line-height 22px
-            padding 10px
-            color black
-            background-color 	#FFF
-            border-radius 5px
-            &:empty:before
-                content attr(placeholder)
-            &:focus:before
-                content none
-            &:focus
+.my-comment-reply {
+  margin-left: 50px;
 
-                padding 8px 8px
+  .reply-input {
+    width: flex;
+  }
+}
 
-                box-shadow none
-                outline none
-    .reply-btn-box
-        height 25px
-        margin 10px 10px 10px 10px
-        .reply-btn
-            position relative
-            float right
+.author-title:not(:last-child) {
+  border-bottom: 1px solid rgba(178, 186, 194, 0.3);
+}
 
-        .anonymous-btn
-            position relative
-            float left
-            margin-top 5px
+.author-title {
+  padding: 10px;
 
-.my-comment-reply
-    margin-left 50px
-    .reply-input
-        width flex
-.author-title:not(:last-child)
-    border-bottom: 1px solid rgba(178,186,194,.3)
-.author-title
-    padding 10px
-    .header-img
-        display inline-block
-        vertical-align top
-    .author-info
-        display inline-block
-        margin-left 5px
-        width 70%
-        height 40px
-        line-height 20px
-        >span
-            display block
-            overflow hidden
-            white-space nowrap
-            text-overflow ellipsis
-        .author-name
-            color #000
-            font-size 18px
-            font-weight bold
-        .author-time
-            font-size 14px
-    .icon-btn
-        width 20%
-        padding 0 !important
-        float right
-        @media screen and (max-width : 1200px){
-            width 20%
-            padding 7px
-        }
-        >span
-            cursor pointer
-        .icon-font
-            margin 0 5px
-    .talk-box
-        margin 0 50px
-        >p
-           margin 0
-        .reply
-            font-size 16px
-            color #000
-    .reply-box
-        margin 10px 0 0 50px
-        background-color #efefef
+  .header-img {
+    display: inline-block;
+    vertical-align: top;
+  }
+
+  .author-info {
+    display: inline-block;
+    margin-left: 5px;
+    width: 70%;
+    height: 40px;
+    line-height: 20px;
+
+    >span {
+      display: block;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .author-name {
+      color: #000;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .author-time {
+      font-size: 14px;
+    }
+  }
+
+  .icon-btn {
+    width: 20%;
+    padding: 0 !important;
+    float: right;
+
+    @media screen and (max-width: 1200px) {
+      width: 20%;
+      padding: 7px;
+    }
+
+    >span {
+      cursor: pointer;
+    }
+
+    .icon-font {
+      margin: 0 5px;
+    }
+  }
+
+  .talk-box {
+    margin: 0 50px;
+
+    >p {
+      margin: 0;
+    }
+
+    .reply {
+      font-size: 16px;
+      color: #000;
+    }
+  }
+
+  .reply-box {
+    margin: 10px 0 0 50px;
+    background-color: #efefef;
+  }
+}
 </style>
