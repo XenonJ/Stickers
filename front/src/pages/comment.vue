@@ -187,10 +187,12 @@ export default {
     };
   },
   directives: { clickoutside },
+  mounted(){
+    this.Refresh();
+  },
   methods: {
     Refresh: function () {
-      this.Refresh();
-
+      // this.Refresh();
       Axios.get("http://127.0.0.1:8000/pages/post_detail/", {
         params: {
           post_id: this.post_id,

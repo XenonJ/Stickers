@@ -110,8 +110,6 @@ export default {
     user_id: Number,
     user_name: String,
     profile_url: String,
-    post_id:String,
-    post_time:String,
   },
   data() {
     return {
@@ -124,7 +122,7 @@ export default {
       toId: -1,
       post: [],
       replyComment: "",
-      
+
       activities: [{
           content: '上传了帖子',
           timestamp: '2022-01-01 20:46',
@@ -143,12 +141,12 @@ export default {
           timestamp: '2018-04-03 20:46',
           size: 'large',
         }],
- 
+
     };
   },
   methods: {
     Refresh: function () {
-      this.Refresh();
+      // this.Refresh();
 
       Axios.get("http://127.0.0.1:8000/pages/user_detail/", {
         params: {
@@ -164,7 +162,7 @@ export default {
           console.log(error);
         });
     },
-    
+
     dateStr(date) {
       //获取js 时间戳
       var time = new Date().getTime();

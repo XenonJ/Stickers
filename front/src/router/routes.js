@@ -7,7 +7,9 @@ const routes = [
       { path: '', component: () => import('pages/Index.vue') },
       { path: 'comment', component: () => import('pages/comment.vue') },
       { path: 'upload_word', component: () => import('pages/upload_word.vue') },
-      { path: 'upload_picture', component: () => import('pages/upload_picture.vue') }
+      { path: 'upload_picture', component: () => import('pages/upload_picture.vue') },
+      { path: 'register', component: () => import('pages/register.vue') },
+      { path: 'login', component: () => import('pages/login.vue') },
     ]
   },
 
