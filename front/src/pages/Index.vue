@@ -11,7 +11,7 @@
       :post_id="Number(this.presentPostID)"
       :profile_url="this.user.profile_url"
       :user_name="this.user.user_name"
-      :picture_url="this.posts[0].picture_url"
+      :picture_url="this.presentPostURL"
       v-show="showPost"
       ref="ArticleComment">
     </ArticleComment>
@@ -25,7 +25,7 @@
     <others v-show="showOthers">
     </others>
     <img
-      v-for="post in posts"
+      v-for="post in static_posts"
       :key="post.post_id"
       :src="post.picture_url"
       :id="post.post_id"
@@ -66,9 +66,76 @@ export default {
       showPost: false,
       showMyself: false,
       showOthers: false,
-      numPost: 2,
+      numPost: 5,
       token: "a",
       presentPostID: 0,
+      presentPostURL: "http://127.0.0.1:8000/images/a.jpg",
+      static_posts: [
+        {
+          post_id: 0,
+          x_coordinates: 12,
+          y_coordinates: 12,
+          rotation_angle: 12,
+          picture_url: "http://127.0.0.1:8000/images/a.jpg",
+          background_url: "",
+        },
+        {
+          post_id: 1,
+          x_coordinates: 1200,
+          y_coordinates: 1200,
+          rotation_angle: -30,
+          picture_url: "http://127.0.0.1:8000/images/b.jpg",
+          background_url: "",
+        },
+        {
+          post_id: 2,
+          x_coordinates: 3200,
+          y_coordinates: 600,
+          rotation_angle: -10,
+          picture_url: "http://127.0.0.1:8000/images/c.jpg",
+          background_url: "",
+        },
+        {
+          post_id: 3,
+          x_coordinates: 47,
+          y_coordinates: 1100,
+          rotation_angle: 15,
+          picture_url: "http://127.0.0.1:8000/images/d.jpg",
+          background_url: "",
+        },
+        {
+          post_id: 4,
+          x_coordinates: 1600,
+          y_coordinates: 600,
+          rotation_angle: -5,
+          picture_url: "http://127.0.0.1:8000/images/e.jpg",
+          background_url: "",
+        },
+        {
+          post_id: 5,
+          x_coordinates: 3500,
+          y_coordinates: 500,
+          rotation_angle: -5,
+          picture_url: "http://127.0.0.1:8000/images/f.jpg",
+          background_url: "",
+        },
+        {
+          post_id: 6,
+          x_coordinates: 3300,
+          y_coordinates: 800,
+          rotation_angle: -5,
+          picture_url: "http://127.0.0.1:8000/images/g.jpg",
+          background_url: "",
+        },
+        {
+          post_id: 7,
+          x_coordinates: 1600,
+          y_coordinates: 1000,
+          rotation_angle: -50,
+          picture_url: "http://127.0.0.1:8000/images/h.jpg",
+          background_url: "",
+        },
+      ],
       posts: [
         {
           post_id: 0,
@@ -79,7 +146,7 @@ export default {
           background_url: "",
         },
         {
-          post_id: 0,
+          post_id: 1,
           x_coordinates: 1200,
           y_coordinates: 600,
           rotation_angle: -30,
@@ -96,8 +163,8 @@ export default {
   created(){
     console.log("created");
     var _this = this;
-    _this.token = _this.$route.query.token
-    console.log(_this.token)
+    _this.token = _this.$route.query.token;
+    console.log(_this.token);
     _this.getPosts();
   },
   mounted(){
@@ -156,7 +223,28 @@ export default {
     },
     draw(canvas) {
       var _this = this;
-      for(var i = 0; i < _this.numPost; i++){
+      for(var i = 0; i < 8; i++){
+        var post = _this.static_posts[i];
+        console.log(post);
+        var img = document.getElementById(post.post_id);
+        var imageInstance = new fabric.Image(img, {
+          left: post.x_coordinates,
+          top: post.y_coordinates,
+          angle: post.rotation_angle,
+          hoverCursor: "pointer",
+          selectable: false,
+        });
+        const num = new String(post.post_id);
+        // imageInstance.on("mousedown", function(opt){
+        //   if(!_this.showPost){
+        //     _this.presentPostID = Number(num);
+        //     // _this.$refs.ArticleComment.Refresh();
+        //   }
+        //   _this.showPost = !_this.showPost;
+        // })
+        canvas.add(imageInstance);
+      }
+      for(var i = 0; i < _this.posts.length; i++){
         var post = _this.posts[i];
         fabric.Image.fromURL(post.picture_url, (img)=>{
             img.set({
@@ -164,12 +252,12 @@ export default {
               top: Number(JSON.stringify(post.y_coordinates)),
               angle: Number(JSON.stringify(post.rotation_angle)),
               hoverCursor: "pointer",
-              selectable: false,
+              selectable: true,
             });
             img.on("mousedown", function(opt){
               if(!_this.showPost){
-                _this.presentPostID = Number(JSON.stringify(post.post_id));
-                _this.$refs.ArticleComment.Refresh();
+                _this.presentPostURL = post.picture_url;
+                // _this.$refs.ArticleComment.Refresh();
               }
               _this.showPost = !_this.showPost;
             })

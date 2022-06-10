@@ -17,7 +17,7 @@
           align="right"
         >
 
-          <q-btn round align="right">
+          <q-btn round align="right" @click="this.myself">
             <q-avatar size="42px">
               <img src="https://cdn.quasar.dev/img/avatar2.jpg">
             </q-avatar>
@@ -61,7 +61,6 @@
           <q-avatar>
             <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg">
           </q-avatar>
-          页脚
         </q-toolbar-title>
         <q-btn round align="center" color="primary" @click="uploadPost">
           <i class="el-icon-plus"></i>
@@ -83,6 +82,9 @@ export default {
     uploadPost(){
       this.$router.push("./upload_picture?token="+this.$route.query.token);
     },
+    myself(){
+      this.$router.push("./myself?token="+this.$route.query.token);
+    }
   }
 }
 </script>

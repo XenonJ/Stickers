@@ -31,8 +31,8 @@
          <div class="demo-image__placeholder">
             <el-image
               style="width: 550px"
-              :src="post.pictureUrl"
-              :preview-src-list="post.previewUrl"
+              :src="this.picture_url"
+              :preview-src-list="this.picture_url"
             ></el-image>
           </div>
           <div class="block" style="display: inline">
@@ -62,7 +62,7 @@
           <el-avatar
             class="header-img"
             :size="40"
-            :src="user.header"
+            :src="this.profile_url"
           ></el-avatar>
           <div class="reply-info">
             <div
@@ -125,7 +125,7 @@
             <el-avatar
               class="header-img"
               :size="40"
-              :src="myHeader"
+              :src="profile_url"
             ></el-avatar>
 
           </div>
@@ -338,7 +338,7 @@ export default {
         let time = this.dateStr(timeNow);
         a.name = this.myName;
         a.comment = this.replyComment;
-        a.headImg = this.myHeader;
+        a.headImg = this.profile_url;
         a.time = time;
         a.commentNum = 0;
         a.like = 0;
@@ -393,6 +393,8 @@ export default {
 .cmt {
   background-color: #F2F6FC;
   border-shadow: 2px;
+  overflow: auto;
+  height: 600px;
 }
 
 .post-title {

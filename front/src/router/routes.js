@@ -10,6 +10,7 @@ const routes = [
       { path: 'upload_picture', component: () => import('pages/upload_picture.vue') },
       { path: 'register', component: () => import('pages/register.vue') },
       { path: 'login', component: () => import('pages/login.vue') },
+      { path: 'myself', component: () => import('pages/myself.vue') },
     ]
   },
 
