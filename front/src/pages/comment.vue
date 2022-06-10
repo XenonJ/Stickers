@@ -98,7 +98,7 @@
       >
       <div style="box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)">
         <div
-          v-for="(item, i) in this.comments"
+          v-for="(item, i) in comments"
           :key="i"
           class="author-title reply-father"
         >
@@ -175,43 +175,61 @@ export default {
 
   data() {
     return {
-      user: [],
+      user: {
+        userName: "abc",
+        profile_url: "",
+        userId: 666,
+      },
       value1: true,
+      btnShow: false,
+      index: "0",
+      replyComment: "",
+      myName: "xxx",
+      myHeader: "https://cdn.quasar.dev/img/avatar2.jpg",
+      myId: 19870621,
+      to: "",
+      toId: -1,
+      post: {
+        header: "",
+        user_name: "xxx",
+        postTime: "2022年4月18日",
+        like_num: "28",
+        flg: true,
+        picture_url:
+          "https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg",
+        previewUrl: [
+          "https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg",
+        ],
+      },
+      comments: [
+        {
+          user_name: "Lana Del Rey",
+          id: 19870621,
+          headImg:
+            "https://ae01.alicdn.com/kf/Hd60a3f7c06fd47ae85624badd32ce54dv.jpg",
+          comment: "我发布一张新专辑Norman Fucking Rockwell,大家快来听啊",
+          comment_time: "2019年9月16日 18:43",
+          like_num: "15",
+          inputShow: false,
+          fig: true,
+        },
+      ],
+
       btnShow: false,
       index: "0",
       post_flg: true,
       to: "",
       toId: -1,
-      post: [],
-      comments: [],
-      replyComment: "",
     };
   },
   directives: { clickoutside },
-  mounted(){
+  mounted() {
     this.Refresh();
-
   },
   methods: {
-    Refresh: function () {
-      // this.Refresh();
-      Axios.get("http://127.0.0.1:8000/pages/post_detail/", {
-        params: {
-          post_id: this.post.post_id,
-          token: this.token,
-        },
-      })
-        .then((res) => {
-          console.log(res);
-          this.post = res.data["post"];
-          this.comments = res.data["comment"];
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    },
     dianZan() {
       if (this.post_flg) {
+        this.post.like_num++;
         Axios.post("http://127.0.0.1:8000/users/like_post", {
           params: {
             post_id: this.post_id,
@@ -220,6 +238,7 @@ export default {
         });
         this.post_flg = false;
       } else {
+        this.post.like_num++;
         Axios.post("http://127.0.0.1:8000/users/rm_like_post", {
           params: {
             post_id: this.post_id,
@@ -274,7 +293,8 @@ export default {
       }
     },
 
-    deleteComment() { if (this.comments.if_self) {
+    deleteComment() {
+      if (this.comments.if_self) {
         Axios.post("http://127.0.0.1:8000/users/delete_comment", {
           params: {
             comment_id: this.comments.comment_id,
@@ -292,7 +312,8 @@ export default {
           type: "warning",
           message: "删除失败",
         });
-      }},
+      }
+    },
     inputFocus() {
       var replyInput = document.getElementById("replyInput");
       replyInput.style.padding = "8px 8px";
@@ -338,6 +359,19 @@ export default {
           type: "success",
           message: "评论成功",
         });
+        let a = {};
+        let input = document.getElementById("replyInput");
+        let timeNow = new Date().getTime();
+        let time = this.dateStr(timeNow);
+        a.name = this.myName;
+        a.comment = this.replyComment;
+        a.headImg = this.myHeader;
+        a.time = time;
+        a.commentNum = 0;
+        a.like = 0;
+        this.comments.push(a);
+        this.replyComment = "";
+        input.innerHTML = "";
       }
     },
 
