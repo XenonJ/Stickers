@@ -1,5 +1,5 @@
 <template>
-  <q-page class="absolute-center">
+  <q-page padding class="fixed fixed-center">
     <div class="cmt">
       <el-container>
         <el-header>
@@ -52,7 +52,7 @@
                   class="el-icon-thumb"
                   @click="dianZan"
                 ></el-button>
-                {{ post.likes }}</span
+                {{ post.like_num }}</span
               >
             </div>
           </div>
@@ -86,7 +86,7 @@
             >
             <div class="anonymous-btn">
               <el-switch
-                v-model="value1"
+                v-model="if_anonymous"
                 active-color="#13ce66"
                 inactive-color="#909399"
               >
@@ -190,13 +190,14 @@ export default {
   directives: { clickoutside },
   mounted(){
     this.Refresh();
+
   },
   methods: {
     Refresh: function () {
       // this.Refresh();
       Axios.get("http://127.0.0.1:8000/pages/post_detail/", {
         params: {
-          post_id: this.post_id,
+          post_id: this.post.post_id,
           token: this.token,
         },
       })
