@@ -1,5 +1,5 @@
 <template>
-  <q-page padding class="fixed fixed-center">
+  <q-page  padding class="fixed fixed-center"  top:0 bottom:0>
     <div class="cmt">
       <el-container>
         <el-header>
@@ -12,7 +12,7 @@
               @click.native="addRoute1"
             ></el-avatar>
             <div class="post-info">
-              <span class="author-name">{{ post.user_name }}</span>
+              <span class="author-name">{{ post.authorName }}</span>
               <span class="author-time">{{ post.postTime }}</span>
             </div>
 
@@ -28,10 +28,10 @@
         </el-header>
 
         <el-main>
-          <div class="demo-image__placeholder">
+         <div class="demo-image__placeholder">
             <el-image
               style="width: 550px"
-              :src="post.picture_url"
+              :src="post.pictureUrl"
               :preview-src-list="post.previewUrl"
             ></el-image>
           </div>
@@ -52,7 +52,7 @@
                   class="el-icon-thumb"
                   @click="dianZan"
                 ></el-button>
-                {{ post.like_num }}</span
+                {{ post.likes }}</span
               >
             </div>
           </div>
@@ -62,7 +62,7 @@
           <el-avatar
             class="header-img"
             :size="40"
-            :src="this.profile_url"
+            :src="user.header"
           ></el-avatar>
           <div class="reply-info">
             <div
@@ -96,7 +96,7 @@
           </div>
         </div></el-container
       >
-      <div style="box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)">
+<div style="box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)">
         <div
           v-for="(item, i) in comments"
           :key="i"
@@ -105,14 +105,14 @@
           <el-avatar
             class="header-img"
             :size="40"
-            :src="item.image_url"
+            :src="item.headImg"
           ></el-avatar>
           <div class="author-info">
-            <span class="author-name">{{ item.user_name }}</span>
-            <span class="author-time">{{ item.comment_time }}</span>
+            <span class="author-name">{{ item.name }}</span>
+            <span class="author-time">{{ item.time }}</span>
           </div>
           <div class="icon-btn">
-            <i class="el-icon-thumb" @click="dianZan2"></i>{{ item.like_num }}
+            <i class="el-icon-thumb" @click="dianZan2"></i>{{ item.likes }}
             <i class="el-icon-delete" @click="deleteComment"></i>
           </div>
           <div class="talk-box">
@@ -125,8 +125,9 @@
             <el-avatar
               class="header-img"
               :size="40"
-              :src="this.profile_url"
+              :src="myHeader"
             ></el-avatar>
+
           </div>
         </div>
       </div>
@@ -177,7 +178,7 @@ export default {
     return {
       user: {
         userName: "abc",
-        profile_url: "",
+        header: "https://cdn.quasar.dev/img/avatar2.jpg",
         userId: 666,
       },
       value1: true,
@@ -185,17 +186,18 @@ export default {
       index: "0",
       replyComment: "",
       myName: "xxx",
-      myHeader: "https://cdn.quasar.dev/img/avatar2.jpg",
+      myHeader:
+        "https://cdn.quasar.dev/img/avatar2.jpg",
       myId: 19870621,
       to: "",
       toId: -1,
       post: {
-        header: "",
-        user_name: "xxx",
+        header: "https://ae01.alicdn.com/kf/Hd60a3f7c06fd47ae85624badd32ce54dv.jpg",
+        authorName: "Lana Del Rey",
         postTime: "2022年4月18日",
-        like_num: "28",
+        likes: "28",
         flg: true,
-        picture_url:
+        pictureUrl:
           "https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg",
         previewUrl: [
           "https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg",
@@ -203,23 +205,17 @@ export default {
       },
       comments: [
         {
-          user_name: "Lana Del Rey",
+          name: "Lana Del Rey",
           id: 19870621,
           headImg:
             "https://ae01.alicdn.com/kf/Hd60a3f7c06fd47ae85624badd32ce54dv.jpg",
-          comment: "我发布一张新专辑Norman Fucking Rockwell,大家快来听啊",
-          comment_time: "2019年9月16日 18:43",
-          like_num: "15",
+          comment: "hello world!",
+          time: "2022年4月18日 18:43",
+          likes: "15",
           inputShow: false,
           fig: true,
         },
       ],
-
-      btnShow: false,
-      index: "0",
-      post_flg: true,
-      to: "",
-      toId: -1,
     };
   },
   directives: { clickoutside },
@@ -228,43 +224,20 @@ export default {
   },
   methods: {
     dianZan() {
-      if (this.post_flg) {
-        this.post.like_num++;
-        Axios.post("http://127.0.0.1:8000/users/like_post", {
-          params: {
-            post_id: this.post_id,
-            token: this.token,
-          },
-        });
-        this.post_flg = false;
+      if (this.post.flg) {
+        this.post.likes++;
+        this.post.flg = false;
       } else {
-        this.post.like_num++;
-        Axios.post("http://127.0.0.1:8000/users/rm_like_post", {
-          params: {
-            post_id: this.post_id,
-            token: this.token,
-          },
-        });
-        this.post_flg = true;
+        this.post.likes--;
+        this.post.flg = true;
       }
     },
     dianZan2() {
-      if (this.comments_flg) {
-        Axios.post("http://127.0.0.1:8000/users/like_comment", {
-          params: {
-            comment_id: this.comment_id,
-            token: this.token,
-          },
-        });
-        this.comments_flg = false;
-      } else {
-        Axios.post("http://127.0.0.1:8000/users/rm_like_comment", {
-          params: {
-            comment_id: this.comment_id,
-            token: this.token,
-          },
-        });
-        this.comments_flg = true;
+      if (this.comments.flg) {
+        this.comments.likes++;
+        this.comments.flg = false; } else {
+        this.comments.likes--;
+        this.comments.flg = true;
       }
     },
     addRoute1() {
