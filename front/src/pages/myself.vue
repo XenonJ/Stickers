@@ -19,8 +19,8 @@
               @click.native="addRoute1"
             ></el-avatar>
             <div class="post-info">
-              <span class="author-name">{{ this.user_name }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<el-link icon="el-icon-edit" @click="Editmyself">编辑</el-link></span>
-              <span class="author-time">{{ this.user_id }}</span>
+              <span class="author-name">zzh &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<el-link icon="el-icon-edit" @click="Editmyself">编辑</el-link></span>
+              <span class="author-time">2019111984</span>
             </div>
 
 
@@ -125,20 +125,20 @@ export default {
 
       activities: [{
           content: '上传了帖子',
-          timestamp: '2022-01-01 20:46',
+          timestamp: '2022-06-10 11:00',
           size: 'large',
         }, {
           content: '上传了帖子',
-          timestamp: '2018-04-03 20:46',
+          timestamp: '2022-06-10 09:46',
           color: '#0bbd87',
           size: 'large',
         }, {
           content: '上传了帖子',
-          timestamp: '2018-04-03 20:46',
+          timestamp: '2022-06-10 09:40',
           size: 'large'
         }, {
           content: '上传了帖子',
-          timestamp: '2018-04-03 20:46',
+          timestamp: '2022-06-10 00:38',
           size: 'large',
         }],
 
